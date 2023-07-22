@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Register Page</title>
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'register_style.css' %}">
+    </head>
+    <body>
+        <form>
+            <div class="form">
+                <p>Register</p>
+                <label for="username">Username:</label><br>
+                <input type="text" id="username" name="username" placeholder="username"><br><br>
+                <label for="password">Password:</label><br>
+                <input type="text" id="password" name="password" placeholder="password"><br><br>
+                <label for="passagain">Password again:</label><br>
+                <input type="text" id="passagain" name="passagain" placeholder="password again"><br><br>
+                <button type="button">Submit</button>
+                <a href="login.html">
+                    <button type="button">Go back</button>
+                </a>
+            </div>
+        </form>
+    </body>
+</html>

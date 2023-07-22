@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<head>
+    <title>LogIn Page</title>
+    {% load static %}
+    <link rel="stylesheet" href= "{% static 'login_style.css' %}">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+
+<body>
+    <form>
+        <div class="form">
+            <p>Login</p>
+            <label for="fname">UserName</label><br>
+            <input type="text" id="fname" name="Username" placeholder="username"><br>
+            <label for="lname">Password</label><br>
+            <input type="text" id="lname" name="Password" placeholder="password"><br>
+            <a href="dashboard.html">
+                <button type="button">LogIn</button>
+            </a>
+            <p> <i>Not register?</i> <a href="register.html">Create an account</a></p>
+        </div>
+    </form>
+</body>
