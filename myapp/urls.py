@@ -1,5 +1,5 @@
 from django.urls import path
-from QLCDL import views
+from . import views
 
 urlpatterns = [
     path('', views.dashboard, name='dashboard'),
