@@ -1,8 +1,14 @@
 from django.shortcuts import render
 from .models import *
 
+def login(request):
+    return render(request, 'myapp/login.html')
+
+def register(request):
+    return render(request, 'myapp/register.html')
+
 def dashboard(request):
-    return render(request, 'dashboard.html', {'mes': 'anything'})
+    return render(request, 'myapp/dashboard.html')
 
 # ------------------------------------------- SELECT --------------------------------------------
 
