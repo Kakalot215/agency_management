@@ -10,6 +10,15 @@ def register(request):
 def dashboard(request):
     return render(request, 'myapp/dashboard.html')
 
+def lists(request):
+    return render(request, 'QLCDL/lists.html')
+
+def receipts(request):
+    return render(request, 'QLCDL/receipts.html')
+
+def reports(request):
+    return render(request, 'QLCDL/reports.html')
+
 # ------------------------------------------- SELECT --------------------------------------------
 
 def bc_congno(request):
