@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<head>
+        <style>
+            .alert {
+                background-color: #f44336;
+                padding: 20px;
+                color: white;
+            }
+
+            .closebtn{
+                color: white;
+                float: right;
+                font-size: 20px;
+                cursor: pointer;
+            }
+
+            .closebtn:hover{
+                color: black;
+            }
+        </style>
+</head>
+<body>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert">
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                <strong>{{message}}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+</body>
