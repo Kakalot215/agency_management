@@ -20,3 +20,4 @@
 2. Add new file 'dashnoard.css' to folder 'static'
 4. Edit something in file 'settings.py' & 'urls' (in folder 'configurate') & add new file 'wsgi.py' (just for fun - i knew it is worthless anyway)
 5. Edit the whole file 'models.py' & 'urls.py' & 'views.py' (in folder 'myapp') (I think u should u these new files I uploaded, maybe they are little bit different)
+6. I will be here tomorow.
