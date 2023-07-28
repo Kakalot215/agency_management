@@ -1,0 +1,153 @@
+body {
+            height: 100%;
+            min-height: 100%;
+        }
+
+        /* Container1 */
+        .container1 {
+            background-color: white;
+            color: black;
+            float: left;
+            width: 20%;
+            height: 99vh;
+            padding: 0%;
+        }
+
+        .container1 h2{
+            padding-left: 8%;
+            font-size: 30px;
+            text-align: left;
+        }
+
+        .container1 button{
+            background-color: white;
+            border: 0px;
+            padding-left: 8%;
+            font-size: 30px;
+            text-align: center;
+        }
+
+        .container1 button:hover, .container1 button:active, .container1 button:focus{
+            background-color: white;
+            color: #3c8bec;
+        }
+        .container1_list {
+            background-color: #3c8bec;
+            list-style-type: none;
+            padding-left: 0%;
+            padding-top: 3%;
+
+            box-sizing: border-box;
+        }
+
+        .container1_list li {
+            margin-top: 10%;
+            margin-bottom: 18%;
+        }
+
+        .container1_list a{
+            /* background-color: ; */
+            font-size: 30px;
+            font-family:Arial, Helvetica, sans-serif;
+            color: aliceblue;
+            text-decoration: none;
+            text-align: left;
+        }
+
+        .container1_list a:hover, .container1_list a:active, .container1_list a:focus {
+            background-color: white;
+            color: black;
+        }
+
+        /* Container2 */
+        .container2 {
+            background-color: white;
+            width: 80%;
+            height: 12vh;
+            float: left;
+        }
+
+        .container2 h2 {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 35px;
+            text-align: center;
+        }
+
+        .container2_form{
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 20px;
+        }
+
+        .container2_form_1{
+            padding-left: 100%;
+            margin-left: 50%;
+        }
+
+        /* Container3 */
+        .container3 {
+            width: 80%;
+            height: 60vh;
+            float: left;
+        }
+
+        .table {
+            background-color: white;
+            font-size: 25px;
+            width: 100%;
+            padding: 0px;
+            margin: 0px;
+            text-align: center;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: aliceblue;
+        }
+
+        .table tr:nth-child(odd) {
+            background-color: aliceblue;
+        }
+
+        th {
+            background-color: #337ab7;
+            color: white;
+        }
+
+        /* Container4 */
+        .container4 {
+            background-color: black;
+            width: 80%;
+            height: 10vh;
+            float: left;
+            text-align: center;
+        }
+
+        .container4 button{
+            float: top;
+            background-color: #1ADBE5;
+            color: #FFFFFF;
+            width: 25%;
+            padding: 15px;
+            margin-top: 50px;
+            margin-left: 10px;
+            border-radius: 10px;
+            border: 0;
+            text-align: center;
+        }
+
+        .container4 button:hover, .container4 button:active, .container4 button:focus {
+            color: rgb(192, 170, 228);
+        }
+
+        @media only screen and (max-width: 500px) {
+            body{
+                height: 100%;
+            }
+            .container1, .container1_list{
+                width: 100%;
+                height: 25%;
+            }
+            .container2, .container2_form{
+                width: 100%;
+                height: 5%;
+            }
+        }
