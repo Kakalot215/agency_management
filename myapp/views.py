@@ -2,10 +2,44 @@ from django.shortcuts import render
 from .models import *
 
 def login(request):
-    return render(request, 'myapp/login.html')
+    # Function used for loging in
+    if request.method == "POST":
+        usrname = request.POST["Uname"]
+        passwd = request.POST["Pass"]
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT * FROM TAIKHOAN")
+        accounts = cursor.fetchall()
+        for row in accounts:
+            if usrname == row[0] and passwd == row[1]:
+                return render(request, "dashboard.html", {})
+
+        messages.error(request, "LogIn failed!")
+    return render(request, "login.html", {})
 
 def register(request):
-    return render(request, 'myapp/register.html')
+    # Registering a new account
+    if request.method == "POST":
+        usrname = request.POST["username"]
+        passwd = request.POST["password"]
+        passwdagain = request.POST["passagain"]
+
+        # Checking some constraints
+        if (len(usrname) == 0):
+            messages.error(request, "Your username is empty!")
+            return render(request, "register.html")
+        if (len(passwd) == 0):
+            messages.error(request, "Your password is empty!")
+            return render(request, "register.html")
+        if(passwd != passwdagain):
+            messages.error(request, "Your verified password is different from your password!")
+            return render(request, "register.html")
+
+        new_account = Taikhoan(tentaikhoan=usrname, matkhau=passwd, maquyentaikhoan='2')
+        new_account.save()
+        messages.success(request, "Register successfully!")
+
+    return render(request, "register.html", {})
 
 def dashboard(request):
     return render(request, 'myapp/dashboard.html')
