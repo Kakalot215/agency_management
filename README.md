@@ -14,3 +14,9 @@
 2. Inside folder 'static', rename the folder 'styles' to 'css' and add 1 more folder 'js'
 3. Upload 3 '.html' files (include 'lists.html', 'receipts.html', 'reports.html') into 'myapp/templates'
 4. Change some content of files ('configurate/setting.py', 'configurate/urls.py', 'myapp/urls.py', 'myapp/views.py', 'myapp/templates/login.html', 'myapp/templates/dashboard.html')
+
+28-07-2023 - 15:09 - Kakalot
+1. Edit content in 'login.html' & 'register.html' & 'dashboard.html'
+2. Add new file 'dashnoard.css' to folder 'static'
+4. Edit something in file 'settings.py' & 'urls' (in folder 'configurate') & add new file 'wsgi.py' (just for fun - i knew it is worthless anyway)
+5. Edit the whole file 'models.py' & 'urls.py' & 'views.py' (in folder 'myapp') (I think u should u these new files I uploaded, maybe they are little bit different)
