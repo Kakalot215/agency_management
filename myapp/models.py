@@ -1,3 +1,10 @@
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
 class Baocaocongno(models.Model):
@@ -129,15 +136,6 @@ class Phieuxuathang(models.Model):
         db_table = 'PhieuXuatHang'
 
 
-class Quyen(models.Model):
-    maquyen = models.CharField(db_column='MaQuyen', primary_key=True, max_length=5, db_collation='SQL_Latin1_General_CP1_CI_AS')  # Field name made lowercase.
-    tenquyen = models.CharField(db_column='TenQuyen', max_length=20, db_collation='SQL_Latin1_General_CP1_CI_AS')  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'QUYEN'
-
-
 class Quan(models.Model):
     maquan = models.CharField(db_column='MaQuan', primary_key=True, max_length=10, db_collation='SQL_Latin1_General_CP1_CI_AS')  # Field name made lowercase.
     tenquan = models.CharField(db_column='TenQuan', max_length=20, db_collation='SQL_Latin1_General_CP1_CI_AS')  # Field name made lowercase.
@@ -146,24 +144,14 @@ class Quan(models.Model):
         managed = False
         db_table = 'Quan'
 
-
 class Taikhoan(models.Model):
     tentaikhoan = models.CharField(db_column='TenTaiKhoan', primary_key=True, max_length=50, db_collation='SQL_Latin1_General_CP1_CI_AS')  # Field name made lowercase.
     matkhau = models.CharField(db_column='MatKhau', max_length=50, db_collation='SQL_Latin1_General_CP1_CI_AS')  # Field name made lowercase.
-    maquyen = models.ForeignKey(Quyen, models.DO_NOTHING, db_column='MaQuyen')  # Field name made lowercase.
+    maquyentaikhoan = models.CharField(db_column="MaQuyen", max_length=5, db_collation='SQL_Latin1_General_CP1_CI_AS')  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'TAIKHOAN'
-
-
-class Timkiem(models.Model):
-    matimkiem = models.CharField(db_column='MaTimKiem', max_length=10, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'TIMKIEM'
-
 
 class Thamso(models.Model):
     sodailytoidamoiquan = models.IntegerField(db_column='SoDaiLyToiDaMoiQuan')  # Field name made lowercase.
