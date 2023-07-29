@@ -132,5 +132,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'QLCDL/static'
+    BASE_DIR / 'Agency_Management_webapp/static'
 ]
