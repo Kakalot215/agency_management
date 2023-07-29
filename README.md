@@ -21,3 +21,7 @@
 4. Edit something in file 'settings.py' & 'urls' (in folder 'configurate') & add new file 'wsgi.py' (just for fun - i knew it is worthless anyway)
 5. Edit the whole file 'models.py' & 'urls.py' & 'views.py' (in folder 'myapp') (I think u should u these new files I uploaded, maybe they are little bit different)
 6. NOTICE: I will be here tomorow and i need some detail about files 'lists.html' & 'receipts.html' & 'reports.html' (i emphasis i want to know your idea).
+
+29-07-2023 - 09:57 - RHMS
+1. Updating All Of Files You Changed Yesterday, Editing A Few Content In setting.py And urls.py Such As The 'HOST' name in DATABASE (setting.py), The Project Name, ... All Changes Made On My Computer, Nothing Change On Github.
+2. Tons Of Problems And Errors Occur That I Can't Solve And Describe -> View Detail On Facebook Messages (Problems Described In Vietnamese)
