@@ -1,6 +1,13 @@
 from django.shortcuts import render
 from .models import *
+from django.contrib import messages
+import pyodbc
 
+def connection():
+    connect_key = "Driver={ODBC Driver 17 for SQL Server}; Server=localhost; Database=QLCDL; Trusted_Connection=yes;"
+    conn = pyodbc.connect(connect_key)
+    return conn
+    
 def login(request):
     # Function used for loging in
     if request.method == "POST":
