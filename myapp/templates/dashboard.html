@@ -1,221 +1,189 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 
     <head>
         <title>DASHBOARD</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width; initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta charset="utf-8">
 <!--        {% load static %}-->
-<!--        <link rel="stylesheet" href= "{% static 'dashboard_style.css' %}">-->
+<!--        <link rel="stylesheet" type="text/css" href= "{% static 'dashboard_style.css' %}">-->
         <link rel="icon" type="image/x-icon" href="favicon.ico">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <style>
-            * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-            }
+                * {
+        margin: 0;
+        padding: 0;
+    }
 
-            body {
-                overflow-x: hidden;
-            }
+    body {
+        overflow-x: hidden;
+    }
 
-            /* Container1 */
-            .container1 {
-                position: fixed;
-                background-color: white;
-                color: black;
-                float: left;
-                width: 20%;
-                height: 100%;
-                padding: 0%;
-            }
+    /* Container1 */
+    .container1 {
+        position: fixed;
+        background-color: white;
+        color: black;
+        float: left;
+        width: 20%;c
+        height: 100%;
+        padding: 0%;
+    }
 
-             .container1 h2 {
-                font-size: 30px;
-                text-align: left;
-             }
+     .container1 h2 {
+        font-size: 30px;
+        text-align: left;
+     }
 
-            .container1_list {
-                position: fixed;
-                width: 20%;
-                height: 100%;
-                background-color: #3c8bec;
-                overflow-x: hidden;
-            }
+    .container1_list {
+        position: fixed;
+        width: 20%;
+        height: 100%;
+        background-color: #3c8bec;
+        overflow-x: hidden;
+    }
 
-            .container1_list li a{
-                width: 100%;
-                height: 100px;
-                display: flex;
-                font-size: 30px;
-                font-family:Arial, Helvetica, sans-serif;
-                color: aliceblue;
-                text-decoration: none;
-                text-align: left;
-                align-items: center;
-                transition: 0.3s;
-            }
-            .container1_list a:hover, .container1_list a:active, .container1_list a:focus {
-                background-color: white;
-                color: black;
-            }
+    .container1_list li a{
+        width: 100%;
+        height: 100px;
+        display: flex;
+        font-size: 30px;
+        font-family:Arial, Helvetica, sans-serif;
+        color: aliceblue;
+        text-decoration: none;
+        text-align: left;
+        align-items: center;
+        transition: 0.3s;
+    }
+    .container1_list a:hover, .container1_list a:active, .container1_list a:focus {
+        background-color: white;
+        color: black;
+    }
 
-            .container1 button{
-                height: 100px;
-                background-color: white;
-                border: 0px;
-                padding-left: 20%;
-                font-size: 30px;
-                text-align: center;
-                cursor: pointer;
-                transition: 0.3s;
-            }
-            .container1 button:hover, .container1 button:active, .container1 button:focus{
-                background-color: white;
-                color: #3c8bec;
-            }
+    .container1 button{
+        height: 100px;
+        background-color: white;
+        border: 0px;
+        padding-left: 20%;
+        font-size: 30px;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .container1 button:hover, .container1 button:active, .container1 button:focus{
+        background-color: white;
+        color: #3c8bec;
+    }
 
-          .container2 {
-            position: relative;
-            background-color: white;
-            width: 100%;
-            min-heght: 100hv;
-            left: 20%;
-          }
+    .container2 {
+        position: relative;
+        background-color: white;
+        width: 100%;
+        min-heght: 100hv;
+        left: 20%;
+    }
 
-        .container2 h2 {
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 40px;
-            text-align: left;
-            height: 100px;
-        }
+    .container2 h2 {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 40px;
+        text-align: left;
+        height: 100px;
+    }
 
-        .container2_form {
-            background-color: white;
-            position: relative;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 25px;
-            height: 50%;
-            align-items: center;
-            display: grid;
-            grid-template-columns: 0.5fr 0.5fr;
-        }
+    .container2_form {
+        background-color: white;
+        position: relative;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 25px;
+        height: 50%;
+        align-items: center;
+        display: grid;
+        grid-template-columns: 0.5fr 0.5fr;
+    }
 
-        .container2_form select {
-            height: 30px;
-            width: 200px;
-            border-radius: 5px;
-        }
+    .container2_form select {
+        height: 30px;
+        width: 200px;
+        border-radius: 5px;
+    }
 
-        .container2_form_1 {
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 25px;
-            height: 50%;
-            align-items: center;
-        }
+    .container2_form_1 {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 25px;
+        height: 50%;
+        align-items: center;
+    }
 
-        .container2_form_1 input {
-            height: 30px;
-            width: 200px;
-            border-radius: 5px;
-        }
+    .container2_form_1 input {
+        height: 30px;
+        width: 200px;
+        border-radius: 5px;
+    }
 
-        .container2_form_1 button{
-            background-color: white;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 20px;
-            height: 50%;
-            align-items: center;
-            border: 0px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+    .container2_form_1 button{
+        background-color: white;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 20px;
+        height: 50%;
+        align-items: center;
+        border: 0px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
 
-        .container2_form_1 button:hover, .container2_form_1 button:active, .container2_form_1 button:focus {
-            background-color: #3c8bec;
-            color: white;
-        }
+    .container2_form_1 button:hover, .container2_form_1 button:active, .container2_form_1 button:focus {
+        background-color: #3c8bec;
+        color: white;
+    }
 
-        /* Container3 */
-        .container3 {
-            position: relative;
-            width: 100%;
-            margin-top: 10px;
-            height: 80vh;
-            left: 20%;
-        }
+    /* Container3 */
+    .container3 {
+        position: relative;
+        width: 100%;
+        margin-top: 10px;
+        height: 80vh;
+        left: 20%;
+    }
 
-        .table {
-            background-color: white;
-            font-size: 20px;
-            width: 80%;
-            text-align: center;
-        }
+    .container3 table {
+        background-color: white;
+        font-size: 20px;
+        width: 80%;
+        text-align: center;
+    }
 
-        .table tr:nth-child(even) {
-            background-color: aliceblue;
-        }
+    .container3 table tr:nth-child(even) {
+        background-color: silver;
+    }
 
-        .table tr:nth-child(odd) {
-            background-color: aliceblue;
-        }
+    th {
+        background-color: #337ab7;
+        color: white;
+    }
 
-        th {
-            background-color: #337ab7;
-            color: white;
-        }
+    td {
+        text-align: left;
+    }
 
-         /* Container4 */
-        .container4 {
-            position: relative;
-            background-color: white;
-            width: 100%;
+    <!-- For mobile screen    - Để tao làm   -->
+    @media only screen and (max-width: 500px) {
+        body{
             height: 100%;
-            padding: 0;
-            margin: 0;
-            align-items: center;
-            left: 20%;
         }
-
-        .container4 button{
-            background-color: #1ADBE5;
-            color: #FFFFFF;
-            font-size: 25px;
-            height: 50px;
-            width: 25%;
-            margin: 15px;
-            border-radius: 10px;
-            border: 0;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.2s;
+        .container1, .container1_list{
+            width: 100%;
+            height: 25%;
         }
-
-        .container4 button:hover, .container4 button:active, .container4 button:focus {
-            background-color: #3c8bec;
-            color: white;
+        .container2, .container2_form{
+            width: 100%;
+            height: 5%;
         }
-
-        <!-- For mobile screen    - Để tao làm   -->
-        @media only screen and (max-width: 500px) {
-            body{
-                height: 100%;
-            }
-            .container1, .container1_list{
-                width: 100%;
-                height: 25%;
-            }
-            .container2, .container2_form{
-                width: 100%;
-                height: 5%;
-            }
         }
         </style>
-
     </head>
 
     <body>
@@ -225,11 +193,11 @@
             <h2> <i>QUANTRIVIEN</i> </h2>
             <button type="button" onclick="">ĐỔI MẬT KHẨU</button>
             <ul class="container1_list">
-                <li> <a href="#section1">XEM DANH SÁCH</a> </li>
-                <li> <a href="#section2">XEM PHIẾU</a> </li>
-                <li> <a href="#section3">XEM BÁO CÁO</a> </li>
-                <li> <a href="#section4">QUY ĐỊNH</a> </li>
-                <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                <li> <a href="{% url 'daily_page' %}">XEM DANH SÁCH</a> </li>
+                <li> <a href="{% url 'pnh_page' %}">XEM PHIẾU</a> </li>
+                <li> <a href="{% url 'bccn_page' %}">XEM BÁO CÁO</a> </li>
+                <li> <a href="{% url 'regulations_page' %}">QUY ĐỊNH</a> </li>
+                <br><br><br><br><br><br><br><br><br>
                 <li> <a href="#section5">LÀM MỚI</a> </li>
                 <li> <a href="{% url 'home' %}">ĐĂNG XUẤT</a> </li>
             </ul>
@@ -239,55 +207,29 @@
         <div class="container2">
             <h2> <i>QUẢN LÝ CÁC ĐẠI LÝ</i> </h2>
             <div class="container2_form">
-                <form action="">
-                    <label for="lists">CHỌN DANH SÁCH</label>
-                    <select name="lists" id="lists">
-                        <option>ĐẠI LÝ</option>
-                        <option>LOẠI ĐẠI LÝ</option>
-                        <option>QUẬN</option>
-                        <option>MẶT HÀNG</option>
-                        <option>ĐƠN VỊ TÍNH</option>
-                    </select>
-                </form>
-                <section class="container2_form_1">
-                    <form>
-                        <label for="finding">TÌM KIẾM</label>
-                        <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">
-                        <button type="button" onclick="#"><i class="fa-solid fa-magnifying-glass"></i></button>
-                    </form>
-                </section>
+
+                {% block category %}
+                {% endblock %}
+
+
             </div>
+
         </div>
 
         <!-- Create a container for table list -->
         <div class="container3">
             <h2> <i>BẢNG DỮ LIỆU</i> </h2>
-            <table class="table">
-                <thread>
-                    <tr>
-                        <th>MÃ ĐẠI LÝ</th>
-                        <th>TÊN ĐẠI LÝ</th>
-                        <th>MÃ LOẠI ĐẠI LÝ</th>
-                        <th>SỐ ĐIỆN THOẠI</th>
-                        <th>ĐỊA CHỈ</th>
-                        <th>MÃ QUẬN</th>
-                        <th>NGÀY TIẾP NHẬN</th>
-                        <th>SỐ TIỀN NỢ</th>
-                    </tr>
-                </thread>
-            </table>
+        <!--      DAILY table      -->
+            {% block content %}
+            {% endblock %}
         </div>
 
-        <!-- Create a section for button -->
-        <div class="container4">
-            <button type="button" onclick="">THÊM</button>
-            <button type="button" onclick="">XÓA</button>
-            <button type="button" onclick="">CẬP NHẬT</button>
-        </div>
-
-    <script>
-        # code
-    </script>
+        <!--WRITING YOUR JAVASCRIPT CODE HERE-->
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+        <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+        <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+        {% block javascript %}
+        {% endblock %}
 
     </body>
 
