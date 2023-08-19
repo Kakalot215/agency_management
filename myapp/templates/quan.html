@@ -1,0 +1,222 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block category %}
+<form action="">
+<label for="lists">CHỌN DANH SÁCH</label>
+    <select id="lists" name="lists_category" data-live-search="true" onchange="location = this.value">
+        <option value="{% url 'quan_page' %}">QUẬN</option>
+        <option value="{% url 'daily_page' %}">ĐẠI LÝ</option>
+        <option value="{% url 'loaidaily_page' %}">LOẠI ĐẠI LÝ</option>
+        <option value="{% url 'mathang_page' %}">MẶT HÀNG</option>
+        <option value="{% url 'dvt_page' %}">ĐƠN VỊ TÍNH</option>
+    </select>
+</form>
+<section class="container2_form_1">
+    <form>
+        <label for="finding">TÌM KIẾM</label>
+        <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">
+        <button type="button" onclick=""><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+</section>
+{% endblock %}
+
+{% block content %}
+<button data-toggle="modal" data-target="#QuanModal" style="margin: 10px">THÊM QUẬN</button>
+<!--       QUAN table         -->
+<table id="quan_table">
+    <thead>
+        <tr>
+            <th>MÃ QUẬN</th>
+            <th>TÊN QUẬN</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if quans %}
+        {% for instance in quans %}
+        <tr id="Q-{{instance.maquan}}">
+            <td class="quanData maquanData" name="maquan">{{ instance.maquan }}</td>
+            <td class="quanData" id="tenquanData" name="tenquan">{{ instance.tenquan }}</td>
+            <td> <button class="btn btn-success" onclick="editQuan('{{instance.maquan}}')" data-toggle="modal" data-target="#QuanModalUpdate" data-whatever="{{instance.maquan}}">EDIT</button> </td>
+            <td> <button class="btn btn-danger" onclick="deleteQuan('{{instance.maquan}}')">DELETE</button> </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+
+<!--MODAL FOR CREATING-->
+<div class="modal fade" id="QuanModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">Update User</h4>
+            </div>
+            <form id="Quan_Create">
+                <div class="modal-body">
+                    <label for="nameForm">TÊN QUẬN</label> <br>
+                    <input type="text" name="tenquanForm" id="nameForm" required> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--MODAL FOR UPDATING-->
+<div class="modal fade" id="QuanModalUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabelUpdate">Update User</h4>
+            </div>
+            <form id="Quan_Update">
+                <div class="modal-body">
+                    <input type="hidden" name="idFormUpdate" id="idFormUpdate"> <br>
+                    <label for="nameFormUpdate">TÊN QUẬN</label> <br>
+                    <input type="text" name="tenquanFormUpdate" id="nameFormUpdate" required> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+<!--JAVASCRIPT BLOCK-->
+{% block javascript %}
+<script>
+<!--Create new QUAN-->
+$('#Quan_Create').submit(function(){
+    let tenquan_new = $('input[name="tenquanForm"]').val().trim();
+    if(tenquan_new)
+    {
+        $.ajax({
+            url: "{% url 'quan_create' %}",
+            data: {
+                'tenquan': tenquan_new
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.quan)
+                {
+                    appendQuanTable(data.quan);
+                }
+                else
+                {
+                    alert("TÊN QUẬN BỊ TRÙNG.");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#QuanModal').modal('hide');
+    return false;
+});
+function appendQuanTable(quan)
+{
+    $('#quan_table > tbody:last-child').append(
+    `
+        <tr id='Q-${quan.maquan}'>
+            <td class="quanData maquanData" name="maquan">${quan.maquan}</td>
+            <td class="quanData tenquanData" name="tenquan">${quan.tenquan}</td>
+            <td> <button class="btn btn-success" onclick="editQuan('${quan.maquan}')" data-toggle="modal" data-target="#QuanModalUpdate" data-whatever="'${quan.maquan}'">EDIT</button> </td>
+            <td> <button class="btn btn-danger" onclick="deleteQuan('${quan.maquan}')">DELETE</button> </td>
+        </tr>
+    `
+    );
+}
+
+// Delete one QUAN
+function deleteQuan(id)
+{
+    $.ajax({
+        url: "{% url 'quan_remove' %}",
+        data: {
+            'id': id
+        },
+        datatype: 'json',
+        success: function(data)
+        {
+            if(data.deleted)
+            {
+                window.location.href = "{% url 'quan_page' %}";
+            }
+            else
+            {
+                alert("XÓA THẤT BẠI DO QUẬN TỒN TẠI TRONG DANH SÁCH ĐẠI LÝ.")
+            }
+        }
+    });
+}
+// Load data to modal
+$('#QuanModalUpdate').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget); // Button that triggered the modal - when model appear.
+  var recipient = button.data('whatever'); // Extract info from data-* attributes (data that sent to modal).
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this);
+  modal.find('.modal-body #idFormUpdate').val(recipient);
+});
+
+// Update one QUAN
+$('#QuanModalUpdate').submit(function(){
+    let maquan_input = $('input[name="idFormUpdate"]').val().trim();
+    let tenquan_input = $('input[name="tenquanFormUpdate"]').val().trim();
+    if(maquan_input && tenquan_input)
+    {
+        $.ajax({
+            url: " {% url 'quan_update' %}",
+            data: {
+                'id': maquan_input,
+                'name': tenquan_input
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.quan)
+                {
+                        window.location.href = "{% url 'quan_page' %}";
+                }
+                else
+                {
+                    alert("TÊN QUẬN ĐÃ TỒN TẠI.");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $(QuanModalUpdate).modal('hide');
+    return false;
+});
+
+// FIX AFTER (USING FOR GET DATA FROM TABLE)
+function editQuan(id)
+{
+    if(id)
+    {
+        let tr_id = '#Q-' + id;
+        let name = $(tr_id).find("#tenquanData").val();
+        console.log(name);
+        $('#nameFormUpdate').val("");
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,191 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block category %}
+<form action="">
+    <label for="lists">CHỌN DANH SÁCH</label>
+    <select id="lists" name="lists_category" data-live-search="true" onchange="location = this.value">
+        <option value="{% url 'dvt_page' %}">ĐƠN VỊ TÍNH</option>
+        <option value="{% url 'daily_page' %}">ĐẠI LÝ</option>
+        <option value="{% url 'loaidaily_page' %}">LOẠI ĐẠI LÝ</option>
+        <option value="{% url 'quan_page' %}">QUẬN</option>
+        <option value="{% url 'mathang_page' %}">MẶT HÀNG</option>
+    </select>
+</form>
+<section class="container2_form_1">
+    <form>
+        <label for="finding">TÌM KIẾM</label>
+        <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">
+        <button type="button" onclick=""><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+</section>
+{% endblock %}
+
+{% block content %}
+<button data-toggle="modal" data-target="#DVTModal" style="margin: 10px">THÊM ĐVT</button>
+<!--       DVT table         -->
+<table id="dvt_table">
+    <thead>
+        <tr>
+            <th>MÃ ĐƠN VỊ TÍNH</th>
+            <th>TÊN ĐƠN VỊ TÍNH</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if dvts %}
+        {% for instance in dvts %}
+        <tr>
+            <td>{{instance.madvt}}</td>
+            <td>{{instance.tendvt}}</td>
+            <td> <button class="btn btn-success" data-toggle="modal" data-target="#DVTModalUpdate" data-whatever="{{instance.madvt}}">EDIT</button></td>
+            <td> <button class="btn btn-danger" onclick="deleteDVT('{{instance.madvt}}')">DELETE</button></td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+
+<!--MODAL FOR CREATING-->
+<div class="modal fade" id="DVTModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">Update User</h4>
+            </div>
+            <form id="DVT_Create" action="" method="get">
+                <div class="modal-body">
+                    <label for="tendvtForm">TÊN ĐƠN VỊ TÍNH</label> <br>
+                    <input type="text" name="tendvtForm" id="tendvtForm" required> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--MODAL FOR UPDATING-->
+<div class="modal fade" id="DVTModalUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">Update User</h4>
+            </div>
+            <form id="DVT_Update" action="" method="get">
+                <div class="modal-body">
+                    <input type="hidden" name="idFormUpdate" id="idFormUpdate">
+                    <label for="tendvtFormUpdate">TÊN ĐƠN VỊ TÍNH</label> <br>
+                    <input type="text" name="tendvtFormUpdate" id="tendvtFormUpdate" required> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+$('#DVT_Create').submit(function(){
+    let tendvt = $('input[name="tendvtForm"]').val().trim();
+    if (tendvt)
+    {
+        $.ajax({
+            url: "{% url 'dvt_create' %}",
+            data: {
+                'name': tendvt
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.dvt)
+                {
+                    window.location.href = "{% url 'dvt_page' %}";
+                }
+                else
+                {
+                    alert("ĐƠN VỊ TÍNH ĐÃ TỒN TẠI.");
+                }
+            }
+        });
+    }   
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#DVTModal').modal('hide');
+    return false;
+});
+function deleteDVT(id)
+{
+    $.ajax({
+        url: "{% url 'dvt_remove' %}",
+        data: {
+            'id': id
+        },
+        datatype: 'json',
+        success: function(data)
+        {
+            if(data.deleted)
+            {
+                window.location.href = "{% url 'dvt_page' %}"
+            }
+            else
+            {
+                alert("XÓA THẤT BẠI. ĐƠN VỊ TÍNH TỒN TẠI TRONG DANH SÁCH MẶT HÀNG.");
+            }
+        }
+    });
+}
+// LOAD DATA TO MODAL BEFORE UPDATING
+$('#DVTModalUpdate').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget); // Button that triggered the modal - when model appear.
+  var recipient = button.data('whatever'); // Extract info from data-* attributes (data that sent to modal).
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this);
+  modal.find('.modal-body #idFormUpdate').val(recipient);
+});
+$('#DVT_Update').submit(function(){
+    let madvt = $('input[name="idFormUpdate"]').val().trim();
+    let tendvt = $('input[name="tendvtFormUpdate"]').val().trim();
+    if (tendvt)
+    {
+        $.ajax({
+            url: "{% url 'dvt_update' %}",
+            data: {
+                'id': madvt,
+                'name': tendvt
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.dvt)
+                {
+                    window.location.href = "{% url 'dvt_page' %}";
+                }
+                else
+                {
+                    alert("ĐƠN VỊ TÍNH ĐÃ TỒN TẠI.");
+                }
+            }
+        });
+    }   
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#DVTModalUpdate').modal('hide');
+    return false;
+});
+</script>
+{% endblock %}

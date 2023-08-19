@@ -1,0 +1,225 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block category %}
+<form action="">
+                    <label for="lists">CHỌN DANH SÁCH</label>
+                    <select id="lists" name="lists_category" data-live-search="true" onchange="location = this.value">
+                        <option value="{% url 'mathang_page' %}">MẶT HÀNG</option>
+                        <option value="{% url 'daily_page' %}">ĐẠI LÝ</option>
+                        <option value="{% url 'loaidaily_page' %}">LOẠI ĐẠI LÝ</option>
+                        <option value="{% url 'quan_page' %}">QUẬN</option>
+                        <option value="{% url 'dvt_page' %}">ĐƠN VỊ TÍNH</option>
+                    </select>
+                </form>
+<section class="container2_form_1">
+                    <form>
+                        <label for="finding">TÌM KIẾM</label>
+                        <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">
+                        <button type="button" onclick=""><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </form>
+                </section>
+{% endblock %}
+
+{% block content %}
+<button data-toggle="modal" data-target="#MHModal" style="margin: 10px">THÊM MẶT HÀNG</button>
+<!--       MATHANG table         -->
+<table id="mathang_table">
+    <thead>
+        <tr>
+            <th>MÃ MẶT HÀNG</th>
+            <th>TÊN MẶT HÀNG</th>
+            <th>MÃ ĐƠN VỊ TÍNH</th>
+            <th>SỐ LƯỢNG TỒN</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if mathangs %}
+        {% for instance in mathangs %}
+        <tr>
+            <td>{{instance.mamathang}}</td>
+            <td>{{instance.tenmathang}}</td>
+            <td>{{instance.madvt}}</td>
+            <td>{{instance.soluongton}}</td>
+            <td> <button class="btn btn-success" data-toggle="modal" data-target="#MHModalUpdate" data-whatever="{{instance.mamathang}}">EDIT</button> </td>
+            <td> <button class="btn btn-danger" onclick="deleteMH('{{instance.mamathang}}')">DELETE</button> </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+
+<!--MODAL FOR CREATING-->
+<div class="modal fade" id="MHModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">THÊM LOẠI ĐẠI LÝ</h4>
+            </div>
+            <form id="MH_Create" action="" method="get">
+                <div class="modal-body">
+                    <label for="tenmhForm">TÊN MẶT HÀNG</label> <br>
+                    <input type="text" name="tenmhForm" id="tenmhForm" required> <br>
+                    <label for="madvtForm">MÃ ĐƠN VỊ TÍNH</label> <br>
+                    <select id="madvtForm" name="madvtForm_category" data-live-search="true">
+                        {% if mathangs %}
+                        {% for option in mathangs %}
+                        <option value="{{option.madvt}}">{{option.madvt}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--MODAL FOR UPDATING-->
+<div class="modal fade" id="MHModalUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">THÊM LOẠI ĐẠI LÝ</h4>
+            </div>
+            <form id="MH_Update" action="" method="get">
+                <div class="modal-body">
+                    <input type="hidden" id="idFormUpdate" name="idFormUpdate">
+                    <label for="tenmhFormUpdate">TÊN MẶT HÀNG</label> <br>
+                    <input type="text" name="tenmhFormUpdate" id="tenmhFormUpdate" required> <br>
+                    <label for="madvtFormUpdate">MÃ ĐƠN VỊ TÍNH</label> <br>
+                    <select id="madvtFormUpdate" name="madvtForm_category" data-live-search="true">
+                        {% if mathangs %}
+                        {% for option in mathangs %}
+                        <option value="{{option.madvt}}">{{option.madvt}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--MODAL FOR UPDATING-->
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+$('#MH_Create').submit(function(){
+    let tenmh_input = $('input[name="tenmhForm"]').val().trim();
+    let mdvt_input = document.getElementById('madvtForm').value;
+    // let mdvt_input = mdvt.options[element.selectedIndex].text;
+    if(tenmh_input && mdvt_input)
+    {
+        $.ajax({
+            url: "{% url 'mathang_create' %}",
+            data: {
+                'name': tenmh_input,
+                'dvt_id': mdvt_input
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.mathang)
+                {
+                    window.location.href = "{% url 'mathang_page' %}"
+                }
+                else
+                {
+                    alert("TÊN MẶT HÀNG ĐÃ TỒN TẠI.");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#MHModal').modal('hide');
+    return false;
+});
+function deleteMH(id)
+{
+    $.ajax({
+        url: "{% url 'mathang_remove' %}",
+        data: {
+            'id': id
+        },
+        datatype: 'json',
+        success: function(data)
+        {
+            if(data.deleted)
+            {
+                window.location.href = "{% url 'mathang_page' %}"
+            }
+            else if(data.deleted == 'CT_PNH')
+            {
+                alert("XÓA THẤT BẠI. MẶT HÀNG TỒN TẠI TRONG CHI TIẾT PHIẾU NHẬP HÀNG.");
+            }
+            else
+            {
+                alert("XÓA THẤT BẠI. MẶT HÀNG TỒN TẠI TRONG CHI TIẾT PHIẾU XUẤT HÀNG.");
+            }
+        }
+    });
+}
+
+// LOAD DATA TO MODAL BEFORE UPDATING
+$('#MHModalUpdate').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget); // Button that triggered the modal - when model appear.
+  var recipient = button.data('whatever'); // Extract info from data-* attributes (data that sent to modal).
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this);
+  modal.find('.modal-body #idFormUpdate').val(recipient);
+});
+
+$('#MH_Update').submit(function(){
+    let mamh = $('input[name="idFormUpdate"]').val().trim();
+    let tenmh = $('input[name="tenmhFormUpdate"]').val().trim();
+    let madvt = document.getElementById('madvtFormUpdate').value;
+    if(mamh && tenmh && madvt)
+    {
+        $.ajax({
+            url: "{% url 'mathang_update' %}",
+            data: {
+                'id': mamh,
+                'name': tenmh,
+                'dvt_id': madvt
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.mathang)
+                {
+                    window.location.href = "{% url 'mathang_page' %}";    
+                }
+                else
+                {
+                    alert("MẶT HÀNG ĐÃ TỒN TẠI.");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#MHModalUpdate').modal('hide');
+    return false;
+});
+</script>
+{% endblock %}

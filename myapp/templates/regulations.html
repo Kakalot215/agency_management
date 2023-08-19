@@ -1,0 +1,111 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block category %}
+<!--<section class="container2_form_1">-->
+<!--                    <form>-->
+<!--                        <label for="finding">TÌM KIẾM</label>-->
+<!--                        <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">-->
+<!--                        <button type="button" onclick="#"><i class="fa-solid fa-magnifying-glass"></i></button>-->
+<!--                    </form>-->
+<!--                </section>-->
+{% endblock %}
+
+{% block content %}
+<table id="reg_table">
+    <thead>
+        <tr>
+            <th>SỐ ĐẠI LÝ TỐI ĐA MỖI QUẬN</th>
+            <th>TỶ LỆ ĐƠN GIÁ BÁN</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if regs %}
+        {% for instance in regs %}
+        <tr>
+            <td>{{instance.sodailytoidamoiquan}}</td>
+            <td>{{instance.tyledongiaban}}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+
+<!--       LOAIDAILY table         -->
+<table id="loaidaily_table" STYLE="display: none;">
+    <thead>
+        <tr>
+            <th>MÃ LOẠI ĐẠI LÝ</th>
+            <th>TÊN LOẠI ĐẠI LÝ</th>
+            <th>SỐ NỢ TỐI ĐA</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for instance in list_loaidaily %}
+        <tr>
+            <td>{{instance.maloaidaily}}</td>
+            <td>{{instance.tenloaidaily}}</td>
+            <td>{{instance.sonotoida}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!--       QUAN table         -->
+<table id="quan_table" STYLE="display: none;">
+    <thead>
+        <tr>
+            <th>MÃ QUẬN</th>
+            <th>TÊN QUẬN</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for instance in list_quan %}
+        <tr>
+            <td>{{instance.maquan}}</td>
+            <td>{{instance.tenquan}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!--       QUAN table         -->
+<table id="mathang_table" STYLE="display: none;">
+    <thead>
+        <tr>
+            <th>MÃ MẶT HÀNG</th>
+            <th>TÊN MẶT HÀNG</th>
+            <th>MÃ ĐƠN VỊ TÍNH</th>
+            <th>SỐ LƯỢNG TỒN</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for instance in list_mathang %}
+        <tr>
+            <td>{{instance.mamathang}}</td>
+            <td>{{instance.tenmathang}}</td>
+            <td>{{instance.madvt}}</td>
+            <td>{{instance.soluongton}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!--       DVT table         -->
+<table id="dvt_table" STYLE="display: none;">
+    <thead>
+        <tr>
+            <th>MÃ ĐƠN VỊ TÍNH</th>
+            <th>TÊN ĐƠN VỊ TÍNH</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for instance in list_dvt %}
+        <tr>
+            <td>{{instance.madvt}}</td>
+            <td>{{instance.tendvt}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

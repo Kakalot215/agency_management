@@ -1,0 +1,57 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block category %}
+<form action="">
+    <label for="bills">CHỌN DANH SÁCH</label>
+    <select id="bills" name="bills_category" data-live-search="true" onchange="location = this.value">
+        <option value="{% url 'pctxh_page' %}">PHIẾU CHI TIẾT XUẤT HÀNG</option>
+        <option value="{% url 'pxh_page' %}">PHIẾU XUẤT HÀNG</option>
+        <option value="{% url 'pnh_page' %}">PHIẾU NHẬP HÀNG</option>
+        <option value="{% url 'pctnh_page' %}">PHIẾU CHI TIẾT NHẬP HÀNG</option>
+        <option value="{% url 'ptt_page' %}">PHIẾU THU TIỀN</option>
+    </select>
+</form>
+<section class="container2_form_1">
+                    <form>
+                        <label for="finding">TÌM KIẾM</label>
+                        <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">
+                        <button type="button" onclick="#"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </form>
+                </section>
+{% endblock %}
+
+{% block content %}
+<table id="bcds_table">
+    <thead>
+        <tr>
+            <th>MÃ BCDS</th>
+            <th>THÁNG</th>
+            <th>MÃ ĐL</th>
+            <th>SỐ PHIẾU XUẤT</th>
+            <th>TỔNG GIÁ TRỊ</th>
+            <th>TỶ LỆ</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if bcdss %}
+        {% for instance in bcdss %}
+        <tr>
+            <td>{{ instance.mabcdoanhso }}</td>
+            <td>{{ instance.thang }}</td>
+            <td>{{ instance.madaily }}</td>
+            <td>{{ instance.sophieuxuat }}</td>
+            <td>{{ instance.tongtrigia }}</td>
+            <td>{{ instance.tyle }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block javascript %}
+<script>
+<!--    Add , Update, Remove -->
+</script>
+{% endblock %}

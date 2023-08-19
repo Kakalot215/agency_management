@@ -1,0 +1,205 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block category %}
+<form action="">
+                    <label for="lists">CHỌN DANH SÁCH</label>
+                    <select id="lists" name="lists_category" data-live-search="true" onchange="location = this.value">
+                        <option value="{% url 'loaidaily_page' %}">LOẠI ĐẠI LÝ</option>
+                        <option value="{% url 'daily_page' %}">ĐẠI LÝ</option>
+                        <option value="{% url 'quan_page' %}">QUẬN</option>
+                        <option value="{% url 'mathang_page' %}">MẶT HÀNG</option>
+                        <option value="{% url 'dvt_page' %}">ĐƠN VỊ TÍNH</option>
+                    </select>
+                </form>
+<section class="container2_form_1">
+                    <form>
+                        <label for="finding">TÌM KIẾM</label>
+                        <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">
+                        <button type="button" onclick=""><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </form>
+                </section>
+{% endblock %}
+
+{% block content %}
+<button data-toggle="modal" data-target="#LDLModal" style="margin: 10px">THÊM LĐL</button>
+<!--       LOAIDAILY table         -->
+<table id="loaidaily_table">
+    <thead>
+        <tr>
+            <th>MÃ LOẠI ĐẠI LÝ</th>
+            <th>TÊN LOẠI ĐẠI LÝ</th>
+            <th>SỐ NỢ TỐI ĐA</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if loaidailys %}
+        {% for instance in loaidailys %}
+        <tr id="LDL-{{instance.maloaidaily}}">
+            <td>{{instance.maloaidaily}}</td>
+            <td>{{instance.tenloaidaily}}</td>
+            <td>{{instance.sonotoida}}</td>
+            <td> <button type="button" class="btn btn-success" data-toggle="modal" data-target="#LDLModalUpdate" data-whatever="{{instance.maloaidaily}}">EDIT</button> </td>
+            <td> <button type="button" class="btn btn-danger" onclick="deleteLDL('{{instance.maloaidaily}}')">DELETE</button> </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+
+<!--MODAL FOR CREATING-->
+<div class="modal fade" id="LDLModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">THÊM LOẠI ĐẠI LÝ</h4>
+            </div>
+            <form id="LDL_Create" action="" method="get">
+                <div class="modal-body">
+                    <label for="tenldlForm">TÊN LOẠI ĐẠI LÝ</label> <br>
+                    <input type="text" name="tenldlForm" id="tenldlForm" required> <br>
+                    <label for="sonotoidaForm">SỐ NỢ TỐI ĐA</label> <br>
+                    <input type="text" name="sonotoidaForm" id="sonotoidaForm" required> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--MODAL FOR UPDATING-->
+<div class="modal fade" id="LDLModalUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabelUpdate">Update User</h4>
+            </div>
+            <form id="LDL_Update">
+                <div class="modal-body">
+                    <input type="hidden" name="idFormUpdate" id="idFormUpdate"> <br>
+                    <label for="tenldlForm">TÊN LOẠI ĐẠI LÝ</label> <br>
+                    <input type="text" name="tenldlFormUpdate" id="tenldlFormUpdate" required> <br>
+                    <label for="sonotoidaForm">SỐ NỢ TỐI ĐA</label> <br>
+                    <input type="text" name="sonotoidaFormUpdate" id="sonotoidaFormUpdate" required> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+$('#LDL_Create').submit(function(){
+    let tenldl = $('input[name="tenldlForm"]').val().trim();
+    let sonotoida = $('input[name="sonotoidaForm"]').val().trim();
+    if(tenldl && sonotoida)
+    {
+        $.ajax({
+            url: "{% url 'ldl_create' %}",
+            data: {
+                'name': tenldl,
+                'debt': sonotoida
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.ldl)
+                {
+                    window.location.href = "{% url 'loaidaily_page' %}";    
+                }
+                else
+                {
+                    alert("TÊN LOẠI ĐẠI LÝ ĐÃ TỒN TẠI");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#LDLModal').modal('hide');
+    return false;
+});
+
+function deleteLDL(maldl)
+{
+    $.ajax({
+        url: "{% url 'ldl_remove' %}",
+        data: {
+            'id': maldl
+        },
+        datatype: 'json',
+        success: function(data)
+        {
+            if(data.deleted)
+            {
+                window.location.href = "{% url 'loaidaily_page' %}";    
+            }
+            else
+            {
+                alert("XÓA THẤT BẠI, MÃ LOẠI ĐẠI LÝ TỒN TẠI TRONG DANH SÁCH ĐẠI LÝ.");
+            }
+        }
+    });
+}
+
+// LOAD DATA TO MODAL BEFORE UPDATING
+$('#LDLModalUpdate').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget); // Button that triggered the modal - when model appear.
+  var recipient = button.data('whatever'); // Extract info from data-* attributes (data that sent to modal).
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this);
+  modal.find('.modal-body #idFormUpdate').val(recipient);
+});
+
+$('#LDL_Update').submit(function(){
+    let maldl = $('input[name="idFormUpdate"]').val().trim();
+    let tenldl = $('input[name="tenldlFormUpdate"]').val().trim();
+    let sonotoida = $('input[name="sonotoidaFormUpdate"]').val().trim();
+    if(maldl && tenldl && sonotoida)
+    {
+        $.ajax({
+            url: "{% url 'ldl_update' %}",
+            data: {
+                'id': maldl,
+                'name': tenldl,
+                'debt': sonotoida
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.ldl)
+                {
+                    window.location.href = "{% url 'loaidaily_page' %}";    
+                }
+                else
+                {
+                    alert("TÊN LOẠI ĐẠI LÝ ĐÃ TỒN TẠI");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#LDLModalUpdate').modal('hide');
+    return false;
+});
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block category %}
+<form action="">
+    <label for="reports">CHỌN DANH SÁCH</label>
+    <select id="reports" name="reports_category" data-live-search="true" onchange="location = this.value">
+        <option value="{% url 'bcds_page' %}">BÁO CÁO DOANH SỐ</option>
+        <option value="{% url 'bccn_page' %}">BÁO CÁO CÔNG NỢ</option>
+    </select>
+</form>
+<section class="container2_form_1">
+                    <form>
+                        <label for="finding">TÌM KIẾM</label>
+                        <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">
+                        <button type="button" onclick="#"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </form>
+                </section>
+{% endblock %}
+
+{% block content %}
+<table id="bcds_table">
+    <thead>
+        <tr>
+            <th>MÃ BCDS</th>
+            <th>THÁNG</th>
+            <th>MÃ ĐL</th>
+            <th>SỐ PHIẾU XUẤT</th>
+            <th>TỔNG GIÁ TRỊ</th>
+            <th>TỶ LỆ</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if bcdss %}
+        {% for instance in bcdss %}
+        <tr>
+            <td>{{ instance.mabcdoanhso }}</td>
+            <td>{{ instance.thang }}</td>
+            <td>{{ instance.madaily }}</td>
+            <td>{{ instance.sophieuxuat }}</td>
+            <td>{{ instance.tongtrigia }}</td>
+            <td>{{ instance.tyle }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block javascript %}
+<script>
+<!--    Add , Update, Remove -->
+</script>
+{% endblock %}
