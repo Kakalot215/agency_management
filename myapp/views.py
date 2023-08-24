@@ -811,7 +811,9 @@ class CreateBCCN(View):
         cursor.close()
 
         for i in madl_thang_all:
-            if i[0] == dl_id1:
+            itemp = i[0]
+            itemp = itemp.replace(" ",'')
+            if itemp == dl_id1:
                 data = {
                     'bccn': ''
                 }
@@ -896,24 +898,129 @@ class UpdateBCCN(View):
 
         return JsonResponse(data)
 
-class BCDSView(ListView):
-    model = Baocaodoanhso
-    template_name = 'bcds.html'
-    context_object_name = 'bcdss'
+# manipulate BCDS's data
+def BCDSView(request):
+    list_bcds = Baocaodoanhso.objects.all()
+    list_daily = Daily.objects.all()
+    return render(request, 'bcds.html', {'bcdss': list_bcds, 'dailys': list_daily})
 class CreateBCDS(View):
-    pass
-class RemoveBCDS(View):
-    pass
-class UpdateBCDS(View):
-    pass
+    def get(self, request):
+        month = request.GET.get('thang', None)
+        dl_id1 = request.GET.get('madl', None)
 
+        cursor = connection().cursor()
+        cursor.execute("SELECT MADAILY FROM BAOCAODOANHSO WHERE THANG=?", month)
+        madl_thang_all = cursor.fetchall()
+        cursor.close()
+
+        for i in madl_thang_all:
+            itemp = i[0]
+            itemp.replace(" ",'')
+            if dl_id1 == itemp:
+                print("Yes")
+                data = {
+                    'bcds': ''
+                }
+                return JsonResponse(data)
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT MABCDOANHSO FROM BAOCAODOANHSO")
+        mabcds_all = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        number = []
+        for i in mabcds_all:
+            lst.append(i[0])
+        
+        for i in lst:
+            i = i.replace(" ",'')
+            temp = i[4:]
+            number.append(int(temp))
+        
+        max = 0
+        for i in number:
+            if i > max:
+                max = i
+
+        max += 1
+        mabcds_new = 'BCDS' + str(max)
+
+        cursor = connection().cursor()
+        cursor.execute("INSERT INTO BAOCAODOANHSO VALUES(?,?,?,?,?,?)", mabcds_new, month, dl_id1, None, None, None)
+        cursor.commit()
+        cursor.close()
+
+        bcds = {
+            'mabcds': mabcds_new,
+        }
+
+        data = {
+            'bcds': bcds
+        }
+        return JsonResponse(data)
+class RemoveBCDS(View):
+    def get(self, request):
+        id1 = request.GET.get('id', None)
+        cursor = connection().cursor()
+        cursor.execute("DELETE FROM BAOCAODOANHSO WHERE MABCDOANHSO = ?", id1)
+        cursor.commit()
+        cursor.close()
+
+        data = {
+            'deleted': True
+        }
+        return JsonResponse(data)
+class UpdateBCDS(View):
+    def get(self, request):
+        id1 = request.GET.get('id', None)
+        month1 = request.GET.get('month', None)
+        dl_id1 = request.GET.get('dl_id', None)
+        cursor = connection().cursor()
+        cursor.execute("SELECT MADAILY FROM BAOCAODOANHSO WHERE THANG=?", month1)
+        madl_thang_all = cursor.fetchall()
+        cursor.close()
+
+
+        for i in madl_thang_all:
+            itemp = i[0]
+            itemp = itemp.replace(" ",'')
+            if dl_id1 == itemp:
+                data = {
+                    'bcds': ''
+                }
+                return JsonResponse(data)
+
+        cursor = connection().cursor()
+        cursor.execute("UPDATE BAOCAODOANHSO SET THANG=?, MADAILY=? WHERE MABCDOANHSO=?", month1, dl_id1, id1)
+        cursor.commit()
+        cursor.close()
+
+        bcds = {'mabcdoanhso': id1}
+        data = {
+            'bcds': bcds
+        }
+
+        return JsonResponse(data)
+
+# manipulating with THAMSO's data
 class REGView(ListView):
     model = Thamso
     template_name = 'regulations.html'
     context_object_name = 'regs'
-class CreateREG(View):
-    pass
-class RemoveREG(View):
-    pass
 class UpdateREG(View):
-    pass
+    def get(self, request):
+        
+        dltoida = request.GET.get('sodlmax', None)
+        tiledongia = request.GET.get('tldgban', None)
+
+        cursor = connection().cursor()
+        cursor.execute("UPDATE THAMSO SET SODAILYTOIDAMOIQUAN=?, TILEDONGIABAN=?", dltoida, tiledongia)
+        cursor.commit()
+        cursor.close()
+
+        data = {
+            'updated': dltoida
+        }
+        return JsonResponse(data)
+    
