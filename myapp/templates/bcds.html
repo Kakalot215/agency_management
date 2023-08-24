@@ -1,6 +1,10 @@
 {% extends 'dashboard.html' %}
 {% load static %}
 
+{% block export_reports %}
+<li> <a onclick="exportBCDS()">XUẤT BÁO CÁO</a> </li>
+{% endblock %}
+
 {% block category %}
 <form action="">
     <label for="reports">CHỌN DANH SÁCH</label>
@@ -13,12 +17,13 @@
                     <form>
                         <label for="finding">TÌM KIẾM</label>
                         <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">
-                        <button type="button" onclick="#"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        <button type="button" onclick=""><i class="fa-solid fa-magnifying-glass"></i></button>
                     </form>
                 </section>
 {% endblock %}
 
 {% block content %}
+<button data-toggle="modal" data-target="#BCDSModal" style="margin: 10px">THÊM BCDS</button>
 <table id="bcds_table">
     <thead>
         <tr>
@@ -28,6 +33,8 @@
             <th>SỐ PHIẾU XUẤT</th>
             <th>TỔNG GIÁ TRỊ</th>
             <th>TỶ LỆ</th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -40,15 +47,216 @@
             <td>{{ instance.sophieuxuat }}</td>
             <td>{{ instance.tongtrigia }}</td>
             <td>{{ instance.tyle }}</td>
+            <td> <button class="btn btn-success" data-toggle="modal" data-target="#BCDSModalUpdate" data-whatever="{{instance.mabcdoanhso}}">EDIT</button> </td>
+            <td> <button class="btn btn-danger" onclick="deleteBCDS('{{instance.mabcdoanhso}}')">DELETE</button> </td>
         </tr>
         {% endfor %}
         {% endif %}
     </tbody>
 </table>
+
+<!--MODAL FOR CREATING-->
+<div class="modal fade" id="BCDSModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">THÊM BÁO CÁO CÔNG NỢ</h4>
+            </div>
+            <form id="BCDS_Create" action="" method="get">
+                <div class="modal-body">
+                    <label for="bcds_thangForm">THÁNG</label> <br>
+                    <select id="bcds_thangForm">
+                        <option value="1">THÁNG 1</option>
+                        <option value="2">THÁNG 2</option>
+                        <option value="3">THÁNG 3</option>
+                        <option value="4">THÁNG 4</option>
+                        <option value="5">THÁNG 5</option>
+                        <option value="6">THÁNG 6</option>
+                        <option value="7">THÁNG 7</option>
+                        <option value="8">THÁNG 8</option>
+                        <option value="9">THÁNG 9</option>
+                        <option value="10">THÁNG 10</option>
+                        <option value="11">THÁNG 11</option>
+                        <option value="12">THÁNG 12</option>
+                    </select> <br>
+                    <label for="bcds_madlForm">MÃ ĐẠI LÝ</label> <br>
+                    <select id="bcds_madlForm">
+                        {% if dailys %}
+                        {% for option in dailys %}
+                        <option val="{{option.madaily}}">{{option.madaily}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--MODAL FOR UPDATING-->
+<div class="modal fade" id="BCDSModalUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">CẬP NHẬT BÁO CÁO DOANH SỐ</h4>
+            </div>
+            <form id="BCDS_Update" action="" method="get">
+                <div class="modal-body">
+                    <input type="hidden" name="bcds_idFormUpdate" id="bcds_idFormUpdate">
+                    <label for="bcds_thangFormUpdate">THÁNG</label> <br>
+                    <select id="bcds_thangFormUpdate">
+                        <option value="1">THÁNG 1</option>
+                        <option value="2">THÁNG 2</option>
+                        <option value="3">THÁNG 3</option>
+                        <option value="4">THÁNG 4</option>
+                        <option value="5">THÁNG 5</option>
+                        <option value="6">THÁNG 6</option>
+                        <option value="7">THÁNG 7</option>
+                        <option value="8">THÁNG 8</option>
+                        <option value="9">THÁNG 9</option>
+                        <option value="10">THÁNG 10</option>
+                        <option value="11">THÁNG 11</option>
+                        <option value="12">THÁNG 12</option>
+                    </select> <br>
+                    <label for="bcds_madlFormUpdate">MÃ ĐẠI LÝ</label> <br>
+                    <select id="bcds_madlFormUpdate">
+                        {% if dailys %}
+                        {% for option in dailys %}
+                        <option val="{{option.madaily}}">{{option.madaily}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block javascript %}
 <script>
-<!--    Add , Update, Remove -->
+function exportBCDS()
+{
+    
+    let tableElement = document.getElementById("bcds_table");
+	let sourceData = "data:text/csv;charset=utf-8,";
+	let i = 0;
+	while (row = tableElement.rows[i]) {
+		sourceData += ([
+			row.cells[0].innerText,
+			row.cells[1].innerText,
+			row.cells[2].innerText,
+			row.cells[3].innerText,
+            row.cells[4].innerText,
+            row.cells[5].innerText
+		]).join(",") + "\r\n";
+		i++;
+	}
+	window.location.href = encodeURI(sourceData);
+}
+$('#BCDS_Create').submit(function(){
+    let thang = document.getElementById('bcds_thangForm').value;
+    let madl = document.getElementById('bcds_madlForm').value;
+    if (thang && madl)
+    {
+        $.ajax({
+            url: "{% url 'bcds_create' %}",
+            data: {
+                'thang': thang,
+                'madl': madl
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                console.log(data.bcds);
+                if(data.bcds)
+                {
+                    window.location.href = "{% url 'bcds_page' %}";
+                }
+                else
+                {
+                    alert("BÁO CÁO DOANH SỐ ĐÃ TỒN TẠI.");
+                }
+            }
+        });
+    }   
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#BCDSModal').modal('hide');
+    return false;
+});
+function deleteBCDS(id)
+{
+    console.log(id);
+    $.ajax({
+        url: "{% url 'bcds_remove' %}",
+        data: {
+            'id': id
+        },
+        datatype: 'json',
+        success: function(data)
+        {
+            if(data.deleted)
+            {
+                window.location.href = "{% url 'bcds_page' %}"
+            }
+        }
+    });
+}
+// LOAD DATA TO MODAL BEFORE UPDATING
+$('#BCDSModalUpdate').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget); // Button that triggered the modal - when model appear.
+  var recipient = button.data('whatever'); // Extract info from data-* attributes (data that sent to modal).
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this);
+  modal.find('.modal-body #bcds_idFormUpdate').val(recipient);
+});
+$('#BCDS_Update').submit(function(){
+    let mabcds = $('input[name="bcds_idFormUpdate"]').val().trim();
+    let thang = document.getElementById('bcds_thangFormUpdate').value;
+    let madl = document.getElementById('bcds_madlFormUpdate').value;
+    if (mabcds && thang && madl)
+    {
+        $.ajax({
+            url: "{% url 'bcds_update' %}",
+            data: {
+                'id': mabcds,
+                'month': thang,
+                'dl_id': madl
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.bcds)
+                {
+                    window.location.href = "{% url 'bcds_page' %}";
+                }
+                else
+                {
+                    alert("BÁO CÁO DOANH SỐ ĐÃ TỒN TẠI ĐÃ TỒN TẠI.");
+                }
+            }
+        });
+    }   
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#BCDSModalUpdate').modal('hide');
+    return false;
+});
 </script>
 {% endblock %}
