@@ -26,3 +26,7 @@
 1. Updating All Of Files You Changed Yesterday, Editing A Few Content In setting.py And urls.py Such As The 'HOST' name in DATABASE (setting.py), The Project Name, ... All Changes Made On My Computer, Nothing Change On Github.
 2. Tons Of Problems And Errors Occur That I Can't Solve And Describe -> View Detail On Facebook Messages (Problems Described In Vietnamese)
 3. NOTICE: I'll Have A Day Off Tomorrow (30-07). Hence, Let's Discuss And Make Decision Within Today (29-07). I'll Comeback The Day After Tomorrow (31-07)
+
+24-8-2023 - 8:33 - Kakalot
+1. I have posted 'bccn + bcds + daily + regulation' (templates), updated urls.py and views.py files.
+2. I think almost the basic stuff are ok (for 'XEM BÁO CÁO' and 'BÁO CÁO' button only). I will develop finding feature and improve other functionalities (only for 'XEM BÁO CÁO' and 'BÁO CÁO' button only too).
