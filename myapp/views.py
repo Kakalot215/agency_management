@@ -80,16 +80,192 @@ def webpage2(request):
 
     return render(request, "register.html", {})
 # manipulate Daily's data
-class DailyView(ListView):
-    model = Daily
-    template_name = 'daily.html'
-    context_object_name = 'dailys'
-class AddDaily(View):
-    pass
+def DailyView(request):
+    list_dl = Daily.objects.all()
+    list_quan = Quan.objects.all()
+    list_ldl = Loaidaily.objects.all()
+    return render(request, 'daily.html', {'dailys': list_dl, 'quans': list_quan, 'ldls': list_ldl})
+class CreateDaily(View):
+    def get(self, request):
+        tendl1 = request.GET.get('tendl', None) 
+        maldl1 = request.GET.get('maldl', None)
+        sdt1 = request.GET.get('sdt', None)
+        dc1 = request.GET.get('dc', None)
+        mq1 = request.GET.get('mq', None)
+        ntn1 = request.GET.get('ntn', None)
+        
+        # Checking if this DAILY's name existed
+        cursor = connection().cursor()
+        cursor.execute("SELECT TENDAILY FROM DAILY")
+        tendl_all = cursor.fetchall()
+        cursor.close()
+
+        for i in tendl_all:
+            if i[0] == tendl1:
+                data = {
+                    'trungten': True
+                }
+                return JsonResponse(data)
+        
+        # Checking if this phone number existed
+        cursor = connection().cursor()
+        cursor.execute("SELECT DIENTHOAI FROM DAILY")
+        sdt_all = cursor.fetchall()
+        cursor.close()
+
+        for i in sdt_all:
+            if i[0] == sdt1:
+                data = {
+                    'trungsdt': True
+                }
+                return JsonResponse(data)
+            
+        # Generating DAILY'ID automatically
+        cursor = connection().cursor()
+        cursor.execute("SELECT MADAILY FROM DAILY")
+        madl_all = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        number = []
+        for i in madl_all:
+            lst.append(i[0])
+        
+        for i in lst:
+            i = i.replace(" ",'')
+            temp = i[2:]
+            number.append(int(temp))
+        
+        max = int(0)
+        for i in number:
+            if i > max:
+                max = i
+        
+        max += 1
+        madl = "DL" + str(max)
+        # Create new DAILY
+        cursor = connection().cursor()
+        cursor.execute("INSERT INTO DAILY VALUES(?,?,?,?,?,?,?,?)", madl, tendl1, maldl1, sdt1, dc1, mq1, ntn1, None)
+        cursor.commit()
+        cursor.close()
+        
+        data = {
+            'new_dl': True
+        }
+
+        return JsonResponse(data)
 class RemoveDaily(View):
-    pass
+    def get(self, request):
+        id1 = request.GET.get('id', None)
+
+        # DAILY existed in PHIEUXUATHANG list
+        cursor = connection().cursor()
+        cursor.execute("SELECT MADAILY FROM PHIEUXUATHANG")
+        madl_pxh_all = cursor.fetchall()
+        cursor.close()
+
+        for i in madl_pxh_all:
+            if(id1 == i[0]):
+                data = {
+                    'deleted': 'pxh'
+                }
+                return JsonResponse(data)
+
+        # DAILY existed in PHIEUTHUTIEN list
+        cursor = connection().cursor()
+        cursor.execute("SELECT MADAILY FROM PHIEUTHUTIEN")
+        madl_ptt_all = cursor.fetchall()
+        cursor.close()
+
+        for i in madl_ptt_all:
+            if(id1 == i[0]):
+                data = {
+                    'deleted': 'ptt'
+                }
+                return JsonResponse(data)
+        
+        # DAILY existed in BAOCAOCONGNO list
+        cursor = connection().cursor()
+        cursor.execute("SELECT MADAILY FROM BAOCAOCONGNO")
+        madl_bccn_all = cursor.fetchall()
+        cursor.close()
+
+        for i in madl_bccn_all:
+            if(id1 == i[0]):
+                data = {
+                    'deleted': 'bccn'
+                }
+                return JsonResponse(data)
+        
+        # DAILY existed in BAOCAODOANHSO list
+        cursor = connection().cursor()
+        cursor.execute("SELECT MADAILY FROM BAOCAODOANHSO")
+        madl_bcds_all = cursor.fetchall()
+        cursor.close()
+
+        for i in madl_bcds_all:
+            if(id1 == i[0]):
+                data = {
+                    'deleted': 'bcds'
+                }
+                return JsonResponse(data)
+            
+        cursor = connection().cursor()
+        cursor.execute("DELETE FROM DAILY WHERE MADAILY = ?", id1)
+        cursor.commit()
+        cursor.close()
+
+        data = {
+            'deleted': True
+        }
+        return JsonResponse(data)
 class UpdateDaily(View):
-    pass
+    def get(self, request):
+        id = request.GET.get('id', None)
+        tendl1 = request.GET.get('tendl', None) 
+        maldl1 = request.GET.get('maldl', None)
+        sdt1 = request.GET.get('sdt', None)
+        dc1 = request.GET.get('dc', None)
+        mq1 = request.GET.get('mq', None)
+        ntn1 = request.GET.get('ntn', None)
+
+        # Checking if this DAILY's name existed
+        cursor = connection().cursor()
+        cursor.execute("SELECT TENDAILY FROM DAILY WHERE MADAILY<>?",id)
+        tendl_all = cursor.fetchall()
+        cursor.close()
+
+        for i in tendl_all:
+            if tendl1 == i[0]:
+                data = {
+                    'trungten': True
+                }
+                return JsonResponse(data)
+
+        # Checking if this phone number existed
+        cursor = connection().cursor()
+        cursor.execute("SELECT DIENTHOAI FROM DAILY WHERE MADAILY<>?", id)
+        sdt_all = cursor.fetchall()
+        cursor.close()
+
+        for i in sdt_all:
+            if i[0] == sdt1:
+                data = {
+                    'trungsdt': True
+                }
+                return JsonResponse(data)
+
+        # Update DAILY
+        cursor = connection().cursor()
+        cursor.execute("UPDATE DAILY SET TENDAILY=?, MALOAIDAILY=?, DIENTHOAI=?, DIACHI=?, MAQUAN=?, NGAYTIEPNHAN=? WHERE MADAILY=?", tendl1, maldl1, sdt1, dc1, mq1, ntn1, id)
+        cursor.commit()
+        cursor.close()
+
+        data = {
+            'daily_new': True
+        }
+
+        return JsonResponse(data)
 # manipulate LOAIDAILY's data
 class LoaidailyView(ListView):
     model = Loaidaily
@@ -196,9 +372,6 @@ class UpdateLoaidaily(View):
                 }
                 return JsonResponse(data)
 
-        print(id1)
-        print(name1)
-        print(debt1)
         obj = Loaidaily.objects.get(maloaidaily=id1)
         obj.tenloaidaily = name1
         obj.sonotoida = debt1
