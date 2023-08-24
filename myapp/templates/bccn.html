@@ -1,6 +1,10 @@
 {% extends 'dashboard.html' %}
 {% load static %}
 
+{% block export_reports %}
+<li> <a onclick="exportBCCN()">XUẤT BÁO CÁO</a> </li>
+{% endblock %}
+
 {% block category %}
 <form action="">
     <label for="reports">CHỌN DANH SÁCH</label>
@@ -29,6 +33,7 @@
             <th>NỢ ĐẦU</th>
             <th>PHÁT SINH</th>
             <th>NỢ CUỐI</th>
+            <th></th>
             <th></th>
             <th></th>
         </tr>
@@ -141,6 +146,24 @@
 
 {% block javascript %}
 <script>
+function exportBCCN()
+{
+    let tableElement = document.getElementById("bccn_table");
+	let sourceData = "data:text/csv;charset=utf-8,";
+	let i = 0;
+	while (row = tableElement.rows[i]) {
+		sourceData += ([
+			row.cells[0].innerText,
+			row.cells[1].innerText,
+			row.cells[2].innerText,
+			row.cells[3].innerText,
+            row.cells[4].innerText,
+            row.cells[5].innerText
+		]).join(",") + "\r\n";
+		i++;
+	}
+	window.location.href = encodeURI(sourceData);
+}
 $('#BCCN_Create').submit(function(){
     let thang = document.getElementById('thangForm').value;
     let madl = document.getElementById('madlForm').value;
