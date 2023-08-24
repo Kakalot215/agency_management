@@ -16,12 +16,13 @@
                     <form>
                         <label for="finding">TÌM KIẾM</label>
                         <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">
-                        <button type="button" onclick="#"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        <button type="button" onclick=""><i class="fa-solid fa-magnifying-glass"></i></button>
                     </form>
                 </section>
 {% endblock %}
 
 {% block content %}
+<button data-toggle="modal" data-target="#DLModal" style="margin: 10px">THÊM ĐẠI LÝ</button>
 <table id="daily_table">
     <thead>
         <tr>
@@ -33,6 +34,8 @@
             <th>MÃ QUẬN</th>
             <th>NGÀY TIẾP NHẬN</th>
             <th>SỐ TIỀN NỢ</th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -47,15 +50,237 @@
             <td>{{instance.maquan}}</td>
             <td>{{instance.ngaytiepnhan}}</td>
             <td>{{instance.sotienno}}</td>
+            <td> <button class="btn btn-success" data-toggle="modal" data-target="#DLModalUpdate" data-whatever="{{instance.madaily}}">EDIT</button> </td>
+            <td> <button class="btn btn-danger" onclick="deleteDL('{{instance.madaily}}')">DELETE</button> </td>
         </tr>
         {% endfor %}
         {% endif %}
     </tbody>
 </table>
+
+<!--MODAL FOR CREATING-->
+<div class="modal fade" id="DLModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">THÊM ĐẠI LÝ</h4>
+            </div>
+            <form id="DL_Create" action="" method="get">
+                <div class="modal-body">
+                    <label for="tendlForm">TÊN ĐẠI LÝ</label> <br>
+                    <input type="text" name="tendlForm" id="tendlForm"> <br>
+                    <label for="tenldlForm">SỐ LOẠI ĐẠI LÝ</label> <br>
+                    <select id="tenldlForm">
+                        {% if ldls %}
+                        {% for ldl in ldls %}
+                        <option value="{{ldl.maloaidaily}}">{{ldl.maloaidaily}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br> <br>
+                    <label for="sdtForm">SỐ ĐIỆN THOẠI</label> <br>
+                    <input type="text" name="sdtForm" id="sdtForm"> <br>
+                    <label for="dcForm">ĐỊA CHỈ</label> <br>
+                    <input type="text" name="dcForm" id="dcForm"> <br>
+                    <label for="maquanForm">MÃ QUẬN</label> <br>
+                    <select id="maquanForm">
+                        {% if quans %}
+                        {% for quan in quans %}
+                        <option value="{{quan.maquan}}">{{quan.maquan}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br>
+                    <label for="ntnForm">NGÀY TIẾP NHẬN</label> <br>
+                    <input type="text" name="ntnForm" id="ntnForm"> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--MODAL FOR UPDATING-->
+<div class="modal fade" id="DLModalUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">CẬP NHẬT ĐẠI LÝ</h4>
+            </div>
+            <form id="DL_Update" action="" method="get">
+                <div class="modal-body">
+                    <input type="hidden" name="dl_idFormUpdate" id="dl_idFormUpdate">
+                    <label for="tendlFormUpdate">TÊN ĐẠI LÝ</label> <br>
+                    <input type="text" name="tendlFormUpdate" id="tendlFormUpdate"> <br>
+                    <label for="tenldlFormUpdate">SỐ LOẠI ĐẠI LÝ</label> <br>
+                    <select id="tenldlFormUpdate">
+                        {% if ldls %}
+                        {% for ldl in ldls %}
+                        <option value="{{ldl.maloaidaily}}">{{ldl.maloaidaily}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br> <br>
+                    <label for="sdtFormUpdate">SỐ ĐIỆN THOẠI</label> <br>
+                    <input type="text" name="sdtFormUpdate" id="sdtFormUpdate"> <br>
+                    <label for="dcFormUpdate">ĐỊA CHỈ</label> <br>
+                    <input type="text" name="dcFormUpdate" id="dcFormUpdate"> <br>
+                    <label for="maquanFormUpdate">MÃ QUẬN</label> <br>
+                    <select id="maquanFormUpdate">
+                        {% if quans %}
+                        {% for quan in quans %}
+                        <option value="{{quan.maquan}}">{{quan.maquan}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br>
+                    <label for="ntnFormUpdate">NGÀY TIẾP NHẬN</label> <br>
+                    <input type="text" name="ntnFormUpdate" id="ntnFormUpdate"> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block javascript %}
 <script>
-<!--    Add , Update, Remove -->
+$('#DL_Create').submit(function(){
+    let tendl = $('input[name="tendlForm"]').val().trim();
+    let maldl = document.getElementById('tenldlForm').value;
+    let sdt = $('input[name="sdtForm"]').val().trim();
+    let dc = $('input[name="dcForm"]').val().trim();
+    let mq = document.getElementById('maquanForm').value;
+    let ntn = $('input[name="ntnForm"]').val().trim();
+    if (tendl && maldl && sdt && dc && mq && ntn)
+    {
+        $.ajax({
+            url: "{% url 'daily_create' %}",
+            data: {
+                'tendl': tendl,
+                'maldl': maldl,
+                'sdt': sdt,
+                'dc': dc,
+                'mq': mq,
+                'ntn': ntn,
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.new_dl == true)
+                {
+                    window.location.href = "{% url 'daily_page' %}";
+                }
+                else if(data.trungten == true)
+                {
+                    alert("TÊN ĐẠI LÝ ĐÃ TỒN TẠI.");
+                }
+                else if(data.trungsdt == true)
+                {
+                    alert("SỐ ĐIỆN THOẠI ĐÃ TỒN TẠI.");
+                }
+            }
+        });
+    }   
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#DLModal').modal('hide');
+    return false;
+});
+function deleteDL(id)
+{   
+    $.ajax({
+        url: "{% url 'daily_remove' %}",
+        data: {
+            'id': id
+        },
+        datatype: 'json',
+        success: function(data)
+        {
+            if(data.deleted == true)
+            {
+                window.location.href = "{% url 'daily_page' %}"
+            }
+            else if(data.deleted == 'pxh')
+            {
+                alert("ĐẠI LÝ TỒN TẠI TRONG PHIẾU XUẤT HÀNG. XÓA THẤT BẠI!");
+            }
+            else if(data.deleted == 'ptt')
+            {
+                alert("ĐẠI LÝ TỒN TẠI TRONG PHIẾU THU TIỀN. XÓA THẤT BẠI!");
+            }
+            else if(data.deleted == 'bccn')
+            {
+                alert("ĐẠI LÝ TỒN TẠI TRONG BÁO CÁO CÔNG NỢ. XÓA THẤT BẠI");
+            }
+            else if(data.deleted == 'bcds')
+            {
+                alert("ĐẠI LÝ TỒN TẠI TRONG BÁO CÁO DOANH SỐ. XÓA THẤT BẠI!");
+            }
+        }
+    });
+}
+// LOAD DATA TO MODAL BEFORE UPDATING
+$('#DLModalUpdate').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget); // Button that triggered the modal - when model appear.
+  var recipient = button.data('whatever'); // Extract info from data-* attributes (data that sent to modal).
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this);
+  modal.find('.modal-body #dl_idFormUpdate').val(recipient);
+});
+$('#DL_Update').submit(function(){
+    let id = $('input[name="dl_idFormUpdate"]').val().trim();
+    let tendl = $('input[name="tendlFormUpdate"]').val().trim();
+    let maldl = document.getElementById('tenldlFormUpdate').value;
+    let sdt = $('input[name="sdtFormUpdate"]').val().trim();
+    let dc = $('input[name="dcFormUpdate"]').val().trim();
+    let mq = document.getElementById('maquanFormUpdate').value;
+    let ntn = $('input[name="ntnFormUpdate"]').val().trim();
+    if (id && tendl && maldl && sdt && dc && mq && ntn)
+    {
+        $.ajax({
+            url: "{% url 'daily_update' %}",
+            data: {
+                'id': id,
+                'tendl': tendl,
+                'maldl': maldl,
+                'sdt': sdt,
+                'dc': dc,
+                'mq': mq,
+                'ntn': ntn,
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.daily_new == true)
+                {
+                    window.location.href = "{% url 'daily_page' %}";
+                }
+                else if(data.trungten == true)
+                {
+                    alert("TÊN ĐẠI LÝ ĐÃ TỒN TẠI. CẬP NHẬT THẤT BẠI!");
+                }
+                else if(data.trungsdt == true)
+                {
+                    alert("SỐ ĐIỆN THOẠI ĐÃ TỒN TẠI. CẬP NHẬT THẤT BẠI!");
+                }
+            }
+        });
+    }   
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#DLModalUpdate').modal('hide');
+    return false;
+});
 </script>
 {% endblock %}
