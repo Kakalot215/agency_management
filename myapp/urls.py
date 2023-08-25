@@ -43,6 +43,21 @@ urlpatterns = [
     path("pctxh/", views.PCTXHView.as_view(), name="pctxh_page"),
     path("ptt/", views.PTTView, name="ptt_page"),
 
+    # URL for manipulating PNH
+    path("pnh/create", views.CreatePNH.as_view(), name="pnh_create"),
+    path("pnh/remove", views.RemovePNH.as_view(), name="pnh_remove"),
+    path("pnh/update", views.UpdatePNH.as_view(), name="pnh_update"),
+
+    # URL for manipulating PXH
+    path("pxh/create", views.CreatePXH.as_view(), name="pxh_create"),
+    path("pxh/remove", views.RemovePXH.as_view(), name="pxh_remove"),
+    path("pxh/update", views.UpdatePXH.as_view(), name="pxh_update"),
+
+    # URL for manipulating PTT
+    path("ptt/create", views.CreatePTT.as_view(), name="ptt_create"),
+    path("ptt/remove", views.RemovePTT.as_view(), name="ptt_remove"),
+    path("ptt/update", views.UpdatePTT.as_view(), name="ptt_update"),
+
     # URL for reports
     path("bccn/", views.BCCNView, name="bccn_page"),
     path("bcds/", views.BCDSView, name="bcds_page"),
