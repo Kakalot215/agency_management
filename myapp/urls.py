@@ -38,10 +38,10 @@ urlpatterns = [
 
     # URL for bills
     path("pnh/", views.PNHView.as_view(), name="pnh_page"),
-    path("pxh/", views.PXHView.as_view(), name="pxh_page"),
+    path("pxh/", views.PXHView, name="pxh_page"),
     path("pctnh/", views.PCTNHView.as_view(), name="pctnh_page"),
     path("pctxh/", views.PCTXHView.as_view(), name="pctxh_page"),
-    path("ptt/", views.PTTView.as_view(), name="ptt_page"),
+    path("ptt/", views.PTTView, name="ptt_page"),
 
     # URL for reports
     path("bccn/", views.BCCNView, name="bccn_page"),
