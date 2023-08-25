@@ -1,4 +1,4 @@
-{% extends 'dashboard.html' %}
+{% extends './dashboard.html' %}
 {% load static %}
 
 {% block category %}
@@ -11,15 +11,16 @@
     </select>
 </form>
 <section class="container2_form_1">
-                    <form>
-                        <label for="finding">TÌM KIẾM</label>
-                        <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">
-                        <button type="button" onclick="#"><i class="fa-solid fa-magnifying-glass"></i></button>
-                    </form>
-                </section>
+    <form>
+        <label for="finding">TÌM KIẾM</label>
+        <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">
+        <button type="button" onclick="#"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+</section>
 {% endblock %}
 
 {% block content %}
+<button data-toggle="modal" data-target="#PTTModal" style="margin: 10px">THÊM PTT</button>
 <table id="ptt_table">
     <thead>
         <tr>
@@ -27,6 +28,8 @@
             <th>MÃ ĐẠI LÝ</th>
             <th>NGÀY THU TIỀN</th>
             <th>SỐ TIỀN THU</th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -37,15 +40,178 @@
             <td>{{ instance.madaily }}</td>
             <td>{{ instance.ngaythutien }}</td>
             <td>{{ instance.sotienthu }}</td>
+            <td> <button class="btn btn-success" data-toggle="modal" data-target="#PTTModalUpdate" data-whatever="{{instance.maphieuthutien}}">EDIT</button> </td>
+            <td> <button class="btn btn-danger" onclick="deletePTT('{{instance.maphieuthutien}}')">DELETE</button> </td>
         </tr>
         {% endfor %}
         {% endif %}
     </tbody>
 </table>
+
+<!--MODAL FOR CREATING-->
+<div class="modal fade" id="PTTModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">THÊM PHIẾU THU TIỀN</h4>
+            </div>
+            <form id="PTT_Create" action="" method="get">
+                <div class="modal-body">
+                    <label for="madlForm">MÃ ĐẠI LÝ</label> <br>
+                    <select id="madlForm">
+                        {% if dailys %}
+                        {% for option in dailys %}
+                        <option val="{{option.madaily}}">{{option.madaily}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br>
+                    <label for="ngayttForm">NGÀY THU TIỀN</label> <br>
+                    <input type="text" name="ngayttForm" id="ngayttForm" required> <br>
+                    <label for="sotienthuForm">SỐ TIỀN THU</label> <br>
+                    <input type="text" name="sotienthuForm" id="sotienthuForm" required> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--MODAL FOR UPDATING-->
+<div class="modal fade" id="PTTModalUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">CẬP NHẬT PHIẾU THU TIỀN</h4>
+            </div>
+            <form id="PTT_Update" action="" method="get">
+                <div class="modal-body">
+                    <input type="hidden" name="idFormUpdate" id="idFormUpdate">
+                    <label for="madlFormUpdate">MÃ ĐẠI LÝ</label> <br>
+                    <select id="madlFormUpdate">
+                        {% if dailys %}
+                        {% for option in dailys %}
+                        <option val="{{option.madaily}}">{{option.madaily}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br>
+                    <label for="ngayttForm">NGÀY THU TIỀN</label> <br>
+                    <input type="text" name="ngayttForm" id="ngayttForm" required> <br>
+                    <label for="sotienthuForm">SỐ TIỀN THU</label> <br>
+                    <input type="text" name="sotienthuForm" id="sotienthuForm" required> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block javascript %}
 <script>
-<!--    Add , Update, Remove -->
+$('#PTT_Create').submit(function(){
+    let madl = document.getElementById('madlForm').value;
+    let ngaytt = document.getElementById('ngayttForm').value;
+    let sotienthu = document.getElementById('sotienthuForm').value;
+    if (madl && ngaytt && sotienthu)
+    {
+        $.ajax({
+            url: "{% url 'ptt_create' %}",
+            data: {
+                'madl': madl,
+                'ngaytt': ngaytt,
+                'sott': sotienthu
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.ptt)
+                {
+                    window.location.href = "{% url 'ptt_page' %}";
+                }
+                else
+                {
+                    alert("PHIẾU THU TIỀN ĐÃ TỒN TẠI.");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#PTTModal').modal('hide');
+    return false;
+});
+function deletePTT(id)
+{
+    $.ajax({
+        url: "{% url 'ptt_remove' %}",
+        data: {
+            'id': id
+        },
+        datatype: 'json',
+        success: function(data)
+        {
+            if(data.deleted)
+            {
+                window.location.href = "{% url 'ptt_page' %}"
+            }
+        }
+    });
+}
+// LOAD DATA TO MODAL BEFORE UPDATING
+$('#PTTModalUpdate').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget); // Button that triggered the modal - when model appear.
+  var recipient = button.data('whatever'); // Extract info from data-* attributes (data that sent to modal).
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this);
+  modal.find('.modal-body #idFormUpdate').val(recipient);
+});
+$('#PTT_Update').submit(function(){
+    let maptt = $('input[name="idFormUpdate"]').val().trim();
+    let madl = document.getElementById('madlFormUpdate').value;
+    let ngaytt = document.getElementById('ngayttForm').value;
+    let sotienthu = document.getElementById('sotienthuForm').value;
+
+    if (maptt && madl && ngaytt && sotienthu)
+    {
+        $.ajax({
+            url: "{% url 'ptt_update' %}",
+            data: {
+                'id': maptt,
+                'dl_id': madl,
+                'date': ngaytt,
+                'money': sotienthu
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.ptt)
+                {
+                    window.location.href = "{% url 'ptt_page' %}";
+                }
+                else
+                {
+                    alert("PHIẾU THU TIỀN ĐÃ TỒN TẠI.");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#PTTModalUpdate').modal('hide');
+    return false;
+});
 </script>
 {% endblock %}
