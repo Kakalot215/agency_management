@@ -1,4 +1,4 @@
-{% extends 'dashboard.html' %}
+{% extends './dashboard.html' %}
 {% load static %}
 
 {% block category %}
@@ -20,6 +20,7 @@
 {% endblock %}
 
 {% block content %}
+<button data-toggle="modal" data-target="#PXHModal" style="margin: 10px">THÊM PXH</button>
 <table id="pxh_table">
     <thead>
         <tr>
@@ -27,6 +28,8 @@
             <th>MÃ ĐẠI LÝ</th>
             <th>NGÀY LẬP PHIẾU</th>
             <th>TỔNG TIỀN</th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -37,15 +40,177 @@
             <td>{{ instance.madaily }}</td>
             <td>{{ instance.ngaylapphieu }}</td>
             <td>{{ instance.tongtien }}</td>
+            <td> <button type="button" class="btn btn-success" data-toggle="modal" data-target="#PXHModalUpdate" data-whatever="{{instance.maphieuxuat}}">EDIT</button> </td>
+            <td> <button type="button" class="btn btn-danger" onclick="deletePXH('{{instance.maphieuxuat}}')">DELETE</button> </td>
         </tr>
         {% endfor %}
         {% endif %}
     </tbody>
 </table>
+
+<!--MODAL FOR CREATING-->
+<div class="modal fade" id="PXHModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">THÊM PHIẾU XUẤT HÀNG</h4>
+            </div>
+            <form id="PXH_Create" action="" method="get">
+                <div class="modal-body">
+                    <label for="madlForm">MÃ ĐẠI LÝ</label> <br>
+                    <select id="madlForm">
+                        {% if dailys %}
+                        {% for option in dailys %}
+                        <option val="{{option.madaily}}">{{option.madaily}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br>
+                    <label for="ngaylpForm">NGÀY LẬP PHIẾU</label> <br>
+                    <input type="text" name="ngaylpForm" id="ngaylpForm" required> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--MODAL FOR UPDATING-->
+<div class="modal fade" id="PXHModalUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabelUpdate">CẬP NHẬT PHIẾU XUẤT HÀNG</h4>
+            </div>
+            <form id="PXH_Update">
+                <div class="modal-body">
+                    <input type="hidden" name="idFormUpdate" id="idFormUpdate"> <br>
+                    <label for="madlForm">MÃ ĐẠI LÝ</label> <br>
+                    <select id="madlForm">
+                        {% if dailys %}
+                        {% for option in dailys %}
+                        <option val="{{option.madaily}}">{{option.madaily}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br>
+                    <label for="ngaylpForm">NGÀY LẬP PHIẾU</label> <br>
+                    <input type="text" name="ngaylpFormUpdate" id="ngaylpFormUpdate" required> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block javascript %}
 <script>
-<!--    Add , Update, Remove -->
+$('#PXH_Create').submit(function(){
+    let madl = document.getElementById('madlForm').value;
+    let ngaylp = $('input[name="ngaylpForm"]').val().trim();
+    if(madl && ngaylp)
+    {
+        $.ajax({
+            url: "{% url 'pnh_create' %}",
+            data: {
+                'madl': madl,
+                'ngaylp': ngaylp,
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.pxh)
+                {
+                    window.location.href = "{% url 'pxh_page' %}";
+                }
+                else
+                {
+                    alert("PHIẾU XUẤT HÀNG ĐÃ TỒN TẠI");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#PXHModal').modal('hide');
+    return false;
+});
+
+function deletePXH(mapxh)
+{
+    $.ajax({
+        url: "{% url 'pxh_remove' %}",
+        data: {
+            'id': mapxh
+        },
+        datatype: 'json',
+        success: function(data)
+        {
+            if(data.deleted)
+            {
+                window.location.href = "{% url 'pxh_page' %}";
+            }
+            else
+            {
+                alert("XÓA THẤT BẠI, MÃ PHIẾU XUẤT HÀNG TỒN TẠI TRONG CHI TIẾT PHIẾU XUẤT HÀNG.");
+            }
+        }
+    });
+}
+
+// LOAD DATA TO MODAL BEFORE UPDATING
+$('#PXHModalUpdate').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget); // Button that triggered the modal - when model appear.
+  var recipient = button.data('whatever'); // Extract info from data-* attributes (data that sent to modal).
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this);
+  modal.find('.modal-body #idFormUpdate').val(recipient);
+});
+
+$('#PXH_Update').submit(function(){
+    let mapnh = $('input[name="idFormUpdate"]').val().trim();
+    let madl = document.getElementById('madlForm').value;
+    let ngaylp = $('input[name="ngaylpFormUpdate"]').val().trim();
+    if(mapnh && madl && ngaylp)
+    {
+        $.ajax({
+            url: "{% url 'pxh_update' %}",
+            data: {
+                'id': mapxh,
+                'madl': madl,
+                'date': ngaylp,
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.pxh)
+                {
+                    window.location.href = "{% url 'pxh_page' %}";
+                }
+                else
+                {
+                    alert("PHIẾU XUẤT HÀNG ĐÃ TỒN TẠI");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#PXHModalUpdate').modal('hide');
+    return false;
+});
 </script>
 {% endblock %}
