@@ -1,4 +1,4 @@
-{% extends 'dashboard.html' %}
+{% extends './dashboard.html' %}
 {% load static %}
 
 {% block category %}
@@ -20,12 +20,15 @@
 {% endblock %}
 
 {% block content %}
+<button data-toggle="modal" data-target="#PNHModal" style="margin: 10px">THÊM PNH</button>
 <table id="pnh_table">
     <thead>
         <tr>
             <th>MÃ PHIẾU NHẬP</th>
             <th>NGÀY LẬP PHIẾU</th>
             <th>TỔNG TIỀN</th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -35,15 +38,158 @@
             <td>{{ instance.maphieunhap }}</td>
             <td>{{ instance.ngaylapphieu }}</td>
             <td>{{ instance.tongtien }}</td>
+            <td> <button type="button" class="btn btn-success" data-toggle="modal" data-target="#PNHModalUpdate" data-whatever="{{instance.maphieunhap}}">EDIT</button> </td>
+            <td> <button type="button" class="btn btn-danger" onclick="deletePNH('{{instance.maphieunhap}}')">DELETE</button> </td>
         </tr>
         {% endfor %}
         {% endif %}
     </tbody>
 </table>
+
+<!--MODAL FOR CREATING-->
+<div class="modal fade" id="PNHModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">THÊM PHIẾU NHẬP HÀNG</h4>
+            </div>
+            <form id="PNH_Create" action="" method="get">
+                <div class="modal-body">
+                    <label for="ngaylpForm">NGÀY LẬP PHIẾU</label> <br>
+                    <input type="text" name="ngaylpForm" id="ngaylpForm" required> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--MODAL FOR UPDATING-->
+<div class="modal fade" id="PNHModalUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabelUpdate">CẬP NHẬT PHIẾU NHẬP HÀNG</h4>
+            </div>
+            <form id="PNH_Update">
+                <div class="modal-body">
+                    <input type="hidden" name="idFormUpdate" id="idFormUpdate"> <br>
+                    <label for="ngaylpForm">NGÀY LẬP PHIẾU</label> <br>
+                    <input type="text" name="ngaylpFormUpdate" id="ngaylpFormUpdate" required> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block javascript %}
 <script>
-<!--    Add , Update, Remove -->
+$('#PNH_Create').submit(function(){
+    let ngaylp = $('input[name="ngaylpForm"]').val().trim();
+    if(ngaylp)
+    {
+        $.ajax({
+            url: "{% url 'pnh_create' %}",
+            data: {
+                'date': ngaylp,
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.pnh)
+                {
+                    window.location.href = "{% url 'pnh_page' %}";
+                }
+                else
+                {
+                    alert("PHIẾU NHẬP HÀNG ĐÃ TỒN TẠI");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#PNHModal').modal('hide');
+    return false;
+});
+
+function deletePNH(mapnh)
+{
+    $.ajax({
+        url: "{% url 'pnh_remove' %}",
+        data: {
+            'id': mapnh
+        },
+        datatype: 'json',
+        success: function(data)
+        {
+            if(data.deleted)
+            {
+                window.location.href = "{% url 'pnh_page' %}";
+            }
+            else
+            {
+                alert("XÓA THẤT BẠI, MÃ PHIẾU NHẬP HÀNG TỒN TẠI TRONG CHI TIẾT PHIẾU NHẬP HÀNG.");
+            }
+        }
+    });
+}
+
+// LOAD DATA TO MODAL BEFORE UPDATING
+$('#PNHModalUpdate').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget); // Button that triggered the modal - when model appear.
+  var recipient = button.data('whatever'); // Extract info from data-* attributes (data that sent to modal).
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this);
+  modal.find('.modal-body #idFormUpdate').val(recipient);
+});
+
+$('#PNH_Update').submit(function(){
+    let mapnh = $('input[name="idFormUpdate"]').val().trim();
+    let ngaylp = $('input[name="ngaylpFormUpdate"]').val().trim();
+
+    if(mapnh && ngaylp)
+    {
+        $.ajax({
+            url: "{% url 'pnh_update' %}",
+            data: {
+                'id': mapnh,
+                'date': ngaylp,
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.pnh)
+                {
+                    window.location.href = "{% url 'pnh_page' %}";
+                }
+                else
+                {
+                    alert("PHIẾU NHẬP HÀNG ĐÃ TỒN TẠI");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#PNHModalUpdate').modal('hide');
+    return false;
+});
 </script>
 {% endblock %}
