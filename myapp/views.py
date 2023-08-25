@@ -745,23 +745,211 @@ class PNHView(ListView):
     model = Phieunhaphang
     template_name = 'pnh.html'
     context_object_name = 'pnhs'
-class CreatePNH(View):
-    pass
-class RemovePNH(View):
-    pass
-class UpdatePNH(View):
-    pass
 
-class PXHView(ListView):
-    model = Phieuxuathang
-    template_name = 'pxh.html'
-    context_object_name = 'pxhs'
+class CreatePNH(View):
+    def get(self, request):
+        ngaylp = request.GET.get('date', None)
+        # sono = request.GET.get('debt', None)
+
+        # cursor = connection().cursor()
+        # cursor.execute("SELECT TENLOAIDAILY FROM LOAIDAILY")
+        # ngaylp_all = cursor.fetchall()
+        # cursor.close()
+        #
+        # for i in ngaylp_all:
+        #     if i[0] == ngaylp:
+        #         data = {
+        #             'data': ''
+        #         }
+        #         return JsonResponse(data)
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT MAPHIEUNHAP FROM PHIEUNHAPHANG")
+        mapnh_all = cursor.fetchall()
+        cursor.close()
+
+        number = []
+        lst = []
+
+        for i in mapnh_all:
+            lst.append(i[0])
+
+        for i in lst:
+            i = i.replace(" ", '')
+            temp = i[3:]
+            number.append(int(temp))
+
+        max = number[0]
+        for i in number:
+            if i > max:
+                max = i
+
+        max += 1
+        mapnh = 'PNH' + str(max)
+
+        cursor = connection().cursor()
+        cursor.execute("INSERT INTO PHIEUNHAPHANG VALUES(?,?,?)", mapnh, ngaylp, None)
+        cursor.commit()
+        cursor.close()
+
+        mathang = {
+            'mapnh': mapnh,
+        }
+
+        data = {
+            'pnh': mathang
+        }
+
+        return JsonResponse(data)
+
+class RemovePNH(View):
+    def get(self, request):
+        id1 = request.GET.get('id', None)
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT MAPHIEUNHAP FROM CT_PNH")
+        mapnh_all = cursor.fetchall()
+        cursor.close()
+
+        for i in mapnh_all:
+            if (id1 == i[0]):
+                data = {
+                    'deleted': False
+                }
+                return JsonResponse(data)
+
+        cursor = connection().cursor()
+        cursor.execute("DELETE FROM PHIEUNHAPHANG WHERE MAPHIEUNHAP = ?", id1)
+        cursor.commit()
+        cursor.close()
+
+        data = {
+            'deleted': True
+        }
+        return JsonResponse(data)
+
+class UpdatePNH(View):
+    def get(self, request):
+        id1 = request.GET.get('id', None)
+        date1 = request.GET.get('date', None)
+
+        cursor = connection().cursor()
+        cursor.execute("UPDATE PHIEUNHAPHANG SET NGAYLAPPHIEU=? WHERE MAPHIEUNHAP=?", date1, id1)
+        cursor.commit()
+        cursor.close()
+
+        pnh = {'mapnh': id1}
+        data = {
+            'pnh': pnh
+        }
+
+        return JsonResponse(data)
+
+def PXHView(request):
+    list_daily = Daily.objects.all()
+    list_pxh = Phieuxuathang.objects.all()
+    return render(request, 'pxh.html', {'pxhs': list_pxh, 'dailys': list_daily})
+
 class CreatePXH(View):
-    pass
+    def get(self, request):
+        dl_id1 = request.GET.get('madl', None)
+        ngaylp = request.GET.get('date', None)
+        # sono = request.GET.get('debt', None)
+
+        # cursor = connection().cursor()
+        # cursor.execute("SELECT TENLOAIDAILY FROM LOAIDAILY")
+        # ngaylp_all = cursor.fetchall()
+        # cursor.close()
+        #
+        # for i in ngaylp_all:
+        #     if i[0] == ngaylp:
+        #         data = {
+        #             'data': ''
+        #         }
+        #         return JsonResponse(data)
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT MAPHIEUXUAT FROM PHIEUXUATHANG")
+        mapxh_all = cursor.fetchall()
+        cursor.close()
+
+        number = []
+        lst = []
+
+        for i in mapxh_all:
+            lst.append(i[0])
+
+        for i in lst:
+            i = i.replace(" ", '')
+            temp = i[3:]
+            number.append(int(temp))
+
+        max = number[0]
+        for i in number:
+            if i > max:
+                max = i
+
+        max += 1
+        mapxh = 'PXH' + str(max)
+
+        cursor = connection().cursor()
+        cursor.execute("INSERT INTO PHIEUXUATHANG VALUES(?,?,?,?)", mapxh, dl_id1, ngaylp, None)
+        cursor.commit()
+        cursor.close()
+
+        mathang = {
+            'mapxh': mapxh,
+        }
+
+        data = {
+            'pxh': mathang
+        }
+
+        return JsonResponse(data)
+
 class RemovePXH(View):
-    pass
+    def get(self, request):
+        id1 = request.GET.get('id', None)
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT MAPHIEUXUAT FROM CT_PXH")
+        mapxh_all = cursor.fetchall()
+        cursor.close()
+
+        for i in mapxh_all:
+            if (id1 == i[0]):
+                data = {
+                    'deleted': False
+                }
+                return JsonResponse(data)
+
+        cursor = connection().cursor()
+        cursor.execute("DELETE FROM PHIEUXUATHANG WHERE MAPHIEUXUAT = ?", id1)
+        cursor.commit()
+        cursor.close()
+
+        data = {
+            'deleted': True
+        }
+        return JsonResponse(data)
+
 class UpdatePXH(View):
-    pass
+    def get(self, request):
+        id1 = request.GET.get('id', None)
+        dl_id1 = request.GET.get('madl', None)
+        date1 = request.GET.get('date', None)
+
+        cursor = connection().cursor()
+        cursor.execute("UPDATE PHIEUXUATHANG SET MADAILY=?, NGAYLAPPHIEU=? WHERE MAPHIEUNHAP=?", dl_id1, date1, id1)
+        cursor.commit()
+        cursor.close()
+
+        pxh = {'mapxh': id1}
+        data = {
+            'pnh': pxh
+        }
+
+        return JsonResponse(data)
 
 class PCTNHView(ListView):
     model = CtPnh
@@ -785,16 +973,87 @@ class RemovePCTXH(View):
 class UpdatePCTXH(View):
     pass
 
-class PTTView(ListView):
-    model = Phieuthutien
-    template_name = 'ptt.html'
-    context_object_name = 'ptts'
+def PTTView(request):
+    list_daily = Daily.objects.all()
+    list_ptt = Phieuthutien.objects.all()
+    return render(request, 'ptt.html', {'ptts': list_ptt, 'dailys': list_daily})
+
 class CreatePTT(View):
-    pass
+    def get(self, request):
+        dl_id1 = request.GET.get('madl', None)
+        ngaytt = request.GET.get('ngaytt', None)
+        sotienthu = request.GET.get('sott', None)
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT MAPHIEUTHUTIEN FROM PHIEUTHUTIEN")
+        maptt_all = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        number = []
+        for i in maptt_all:
+            lst.append(i[0])
+
+        for i in lst:
+            i = i.replace(" ", '')
+            temp = i[3:]
+            number.append(int(temp))
+
+        max = 0
+        for i in number:
+            if i > max:
+                max = i
+
+        max += 1
+        maptt = 'PTT' + str(max)
+
+        cursor = connection().cursor()
+        cursor.execute("INSERT INTO PHIEUTHUTIEN VALUES(?,?,?,?)", maptt, dl_id1, ngaytt, sotienthu)
+        cursor.commit()
+        cursor.close()
+
+        mathang = {
+            'mabccn': maptt,
+        }
+
+        data = {
+            'ptt': mathang
+        }
+        return JsonResponse(data)
+
 class RemovePTT(View):
-    pass
+    def get(self, request):
+        id1 = request.GET.get('id', None)
+
+        cursor = connection().cursor()
+        cursor.execute("DELETE FROM PHIEUTHUTIEN WHERE MAPHIEUTHUTIEN = ?", id1)
+        cursor.commit()
+        cursor.close()
+
+        data = {
+            'deleted': True
+        }
+        return JsonResponse(data)
+
 class UpdatePTT(View):
-    pass
+    def get(self, request):
+        id1 = request.GET.get('id', None)
+        dl_id1 = request.GET.get('dl_id', None)
+        ngaytt = request.GET.get('date', None)
+        sott = request.GET.get('money', None)
+
+        cursor = connection().cursor()
+        cursor.execute("UPDATE PHIEUTHUTIEN SET MADAILY=?, NGAYTHUTIEN=?, SOTIENTHU=?, WHERE MAPHIEUTHUTIEN=?", dl_id1, ngaytt, sott, id1)
+        cursor.commit()
+        cursor.close()
+
+        ptt = {'maptt': id1}
+        data = {
+            'ptt': ptt
+        }
+
+        return JsonResponse(data)
+        
 # manipulate BCCN's data
 def BCCNView(request):
     list_daily = Daily.objects.all() 
