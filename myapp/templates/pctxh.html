@@ -1,57 +1,244 @@
-{% extends 'dashboard.html' %}
+{% extends './dashboard.html' %}
 {% load static %}
 
 {% block category %}
-<form action="">
-    <label for="bills">CHỌN DANH SÁCH</label>
-    <select id="bills" name="bills_category" data-live-search="true" onchange="location = this.value">
-        <option value="{% url 'pctxh_page' %}">PHIẾU CHI TIẾT XUẤT HÀNG</option>
-        <option value="{% url 'pxh_page' %}">PHIẾU XUẤT HÀNG</option>
-        <option value="{% url 'pnh_page' %}">PHIẾU NHẬP HÀNG</option>
-        <option value="{% url 'pctnh_page' %}">PHIẾU CHI TIẾT NHẬP HÀNG</option>
-        <option value="{% url 'ptt_page' %}">PHIẾU THU TIỀN</option>
-    </select>
-</form>
+<!--<form action="">-->
+<!--    <label for="bills">CHỌN DANH SÁCH</label>-->
+<!--    <select id="bills" name="bills_category" data-live-search="true" onchange="location = this.value">-->
+<!--        <option value="{% url 'pctxh_page' %}">PHIẾU CHI TIẾT XUẤT HÀNG</option>-->
+<!--        <option value="{% url 'pxh_page' %}">PHIẾU XUẤT HÀNG</option>-->
+<!--        <option value="{% url 'pnh_page' %}">PHIẾU NHẬP HÀNG</option>-->
+<!--        <option value="{% url 'pctnh_page' %}">PHIẾU CHI TIẾT NHẬP HÀNG</option>-->
+<!--        <option value="{% url 'ptt_page' %}">PHIẾU THU TIỀN</option>-->
+<!--    </select>-->
+<!--</form>-->
 <section class="container2_form_1">
-                    <form>
-                        <label for="finding">TÌM KIẾM</label>
-                        <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">
-                        <button type="button" onclick="#"><i class="fa-solid fa-magnifying-glass"></i></button>
-                    </form>
-                </section>
+    <form>
+        <label for="finding">TÌM KIẾM</label>
+        <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">
+        <button type="button" onclick="#"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+</section>
 {% endblock %}
 
 {% block content %}
-<table id="bcds_table">
+<button data-toggle="modal" data-target="#CT_PXHModal" style="margin: 10px">THÊM CT_PXH</button>
+<table id="pctxh_table">
     <thead>
         <tr>
-            <th>MÃ BCDS</th>
-            <th>THÁNG</th>
-            <th>MÃ ĐL</th>
-            <th>SỐ PHIẾU XUẤT</th>
-            <th>TỔNG GIÁ TRỊ</th>
-            <th>TỶ LỆ</th>
+            <th>MÃ CT_PXH</th>
+            <th>MÃ PHIẾU XUẤT</th>
+            <th>MÃ MẶT HÀNG</th>
+            <th>SỐ LƯỢNG XUẤT</th>
+            <th>ĐƠN GIÁ XUẤT</th>
+            <th>THÀNH TIỀN</th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-        {% if bcdss %}
-        {% for instance in bcdss %}
+        {% if pctxhs %}
+        {% for instance in pctxhs %}
         <tr>
-            <td>{{ instance.mabcdoanhso }}</td>
-            <td>{{ instance.thang }}</td>
-            <td>{{ instance.madaily }}</td>
-            <td>{{ instance.sophieuxuat }}</td>
-            <td>{{ instance.tongtrigia }}</td>
-            <td>{{ instance.tyle }}</td>
+            <td>{{ instance.mact_pxh }}</td>
+            <td>{{ instance.maphieuxuat }}</td>
+            <td>{{ instance.mamathang }}</td>
+            <td>{{ instance.soluongxuat }}</td>
+            <td>{{ instance.dongiaxuat }}</td>
+            <td>{{ instance.thanhtien }}</td>
+            <td> <button type="button" class="btn btn-success" data-toggle="modal" data-target="#CT_PXHModalUpdate" data-whatever="{{instance.mact_pxh}}">EDIT</button> </td>
+            <td> <button type="button" class="btn btn-danger" onclick="deleteCT_PXH('{{instance.mact_pxh}}')">DELETE</button> </td>
         </tr>
         {% endfor %}
         {% endif %}
     </tbody>
 </table>
+
+<!--MODAL FOR CREATING-->
+<div class="modal fade" id="CT_PXHModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">THÊM CHI TIẾT PHIẾU XUẤT HÀNG</h4>
+            </div>
+            <form id="CT_PXH_Create" action="" method="get">
+                <div class="modal-body">
+                    <label for="mapxhForm">MÃ PHIẾU XUẤT</label> <br>
+                    <select id="mapxhForm">
+                        {% if mapxhs %}
+                        {% for option in mapxhs %}
+                        <option val="{{option.maphieuxuat}}">{{option.maphieuxuat}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br>
+                    <label for="mamhForm">MÃ MẶT HÀNG</label> <br>
+                    <select id="mamhForm">
+                        {% if mamhs %}
+                        {% for option in mamhs %}
+                        <option val="{{option.mamathang}}">{{option.mamathang}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br>
+                    <label for="slxuatForm">SỐ LƯỢNG XUẤT</label> <br>
+                    <input type="text" name="slxuatForm" id="slxuatForm" required> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--MODAL FOR UPDATING-->
+<div class="modal fade" id="CT_PXHModalUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabelUpdate">CẬP NHẬT CHI TIẾT PHIẾU XUẤT HÀNG</h4>
+            </div>
+            <form id="CT_PXH_Update">
+                <div class="modal-body">
+                    <input type="hidden" name="idFormUpdate" id="idFormUpdate">
+                    <label for="mapxhForm">MÃ PHIẾU XUẤT</label> <br>
+                    <select id="mapxhForm">
+                        {% if mapxhs %}
+                        {% for option in mapxhs %}
+                        <option val="{{option.maphieuxuat}}">{{option.maphieuxuat}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br>
+                    <label for="mamhForm">MÃ MẶT HÀNG</label> <br>
+                    <select id="mamhForm">
+                        {% if mamhs %}
+                        {% for option in mamhs %}
+                        <option val="{{option.mamathang}}">{{option.mamathang}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br>
+                    <label for="slxuatForm">SỐ LƯỢNG XUẤT</label> <br>
+                    <input type="text" name="slxuatForm" id="slxuatForm" required> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block javascript %}
 <script>
-<!--    Add , Update, Remove -->
+$('#CT_PXH_Create').submit(function(){
+    let mapxh = $('input[name="mapxhForm"]').val().trim();
+    let mamh = $('input[name="mamhForm"]').val().trim();
+    let slxuat = $('input[name="slxuatForm"]').val().trim();
+
+    if(mapxh && mamh && slxuat)
+    {
+        $.ajax({
+            url: "{% url 'pctxh_create' %}",
+            data: {
+                'mapxh': mapxh,
+                'mamh': mamh,
+                'slxuat': slxuat,
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.ct_pxh)
+                {
+                    window.location.href = "{% url 'pctxh_page' %}";
+                }
+                else
+                {
+                    alert("CHI TIẾT PHIẾU XUẤT HÀNG ĐÃ TỒN TẠI");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#CT_PXHModal').modal('hide');
+    return false;
+});
+
+function deleteCT_PXH(mactpxh)
+{
+    $.ajax({
+        url: "{% url 'pctxh_remove' %}",
+        data: {
+            'id': mactpxh
+        },
+        datatype: 'json',
+        success: function(data)
+        {
+            if(data.deleted)
+            {
+                window.location.href = "{% url 'pctxh_page' %}";
+            }
+            else
+            {
+                alert("XÓA THẤT BẠI, HÃY THỬ LẠI.");
+            }
+        }
+    });
+}
+
+// LOAD DATA TO MODAL BEFORE UPDATING
+$('#CT_PXHModalUpdate').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget); // Button that triggered the modal - when model appear.
+  var recipient = button.data('whatever'); // Extract info from data-* attributes (data that sent to modal).
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this);
+  modal.find('.modal-body #idFormUpdate').val(recipient);
+});
+
+$('#CT_PXH_Update').submit(function(){
+    let mactpxh = $('input[name="idFormUpdate"]').val().trim();
+    let mapxh = $('input[name="mapxhForm"]').val().trim();
+    let mamh = $('input[name="mamhForm"]').val().trim();
+    let slxuat = $('input[name="slxuatForm"]').val().trim();
+
+    if(mactpxh && mapxh && mamh && slxuat)
+    {
+        $.ajax({
+            url: "{% url 'pctxh_update' %}",
+            data: {
+                'id': mactpxh,
+                'mapxh': mapxh,
+                'mamh': mamh,
+                'slxuat': slxuat,
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.ct_pxh)
+                {
+                    window.location.href = "{% url 'pctxh_page' %}";
+                }
+                else
+                {
+                    alert("CHI TIẾT PHIẾU XUẤT HÀNG ĐÃ TỒN TẠI");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#CT_PXHModalUpdate').modal('hide');
+    return false;
+});
 </script>
 {% endblock %}
