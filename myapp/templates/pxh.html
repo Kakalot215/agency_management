@@ -30,6 +30,7 @@
             <th>TỔNG TIỀN</th>
             <th></th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -42,6 +43,7 @@
             <td>{{ instance.tongtien }}</td>
             <td> <button type="button" class="btn btn-success" data-toggle="modal" data-target="#PXHModalUpdate" data-whatever="{{instance.maphieuxuat}}">EDIT</button> </td>
             <td> <button type="button" class="btn btn-danger" onclick="deletePXH('{{instance.maphieuxuat}}')">DELETE</button> </td>
+            <td> <button type="button" class="btn btn-danger" onclick="window.location.href='{% url 'pctxh_page' %}'" >DETAIL</button> </td>
         </tr>
         {% endfor %}
         {% endif %}
