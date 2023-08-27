@@ -1,57 +1,252 @@
-{% extends 'dashboard.html' %}
+{% extends './dashboard.html' %}
 {% load static %}
 
 {% block category %}
-<form action="">
-    <label for="bills">CHỌN DANH SÁCH</label>
-    <select id="bills" name="bills_category" data-live-search="true" onchange="location = this.value">
-        <option value="{% url 'pctnh_page' %}">PHIẾU CHI TIẾT NHẬP HÀNG</option>
-        <option value="{% url 'pxh_page' %}">PHIẾU XUẤT HÀNG</option>
-        <option value="{% url 'pnh_page' %}">PHIẾU NHẬP HÀNG</option>
-        <option value="{% url 'pctxh_page' %}">PHIẾU CHI TIẾT XUẤT HÀNG</option>
-        <option value="{% url 'ptt_page' %}">PHIẾU THU TIỀN</option>
-    </select>
-</form>
+<!--<form action="">-->
+<!--    <label for="bills">CHỌN DANH SÁCH</label>-->
+<!--    <select id="bills" name="bills_category" data-live-search="true" onchange="location = this.value">-->
+<!--        <option value="{% url 'pctnh_page' %}">PHIẾU CHI TIẾT NHẬP HÀNG</option>-->
+<!--        <option value="{% url 'pxh_page' %}">PHIẾU XUẤT HÀNG</option>-->
+<!--        <option value="{% url 'pnh_page' %}">PHIẾU NHẬP HÀNG</option>-->
+<!--        <option value="{% url 'pctxh_page' %}">PHIẾU CHI TIẾT XUẤT HÀNG</option>-->
+<!--        <option value="{% url 'ptt_page' %}">PHIẾU THU TIỀN</option>-->
+<!--    </select>-->
+<!--</form>-->
 <section class="container2_form_1">
-                    <form>
-                        <label for="finding">TÌM KIẾM</label>
-                        <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">
-                        <button type="button" onclick="#"><i class="fa-solid fa-magnifying-glass"></i></button>
-                    </form>
-                </section>
+    <form>
+        <label for="finding">TÌM KIẾM</label>
+        <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">
+        <button type="button" onclick="#"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+</section>
 {% endblock %}
 
 {% block content %}
-<table id="bcds_table">
+<button data-toggle="modal" data-target="#CT_PNHModal" style="margin: 10px">THÊM CT_PNH</button>
+<table id="pctnh_table">
     <thead>
         <tr>
-            <th>MÃ BCDS</th>
-            <th>THÁNG</th>
-            <th>MÃ ĐL</th>
-            <th>SỐ PHIẾU XUẤT</th>
-            <th>TỔNG GIÁ TRỊ</th>
-            <th>TỶ LỆ</th>
+            <th>MÃ CT_PNH</th>
+            <th>MÃ PHIẾU NHẬP</th>
+            <th>MÃ MẶT HÀNG</th>
+            <th>SỐ LƯỢNG NHẬP</th>
+            <th>ĐƠN GIÁ NHẬP</th>
+            <th>THÀNH TIỀN</th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-        {% if bcdss %}
-        {% for instance in bcdss %}
-        <tr>
-            <td>{{ instance.mabcdoanhso }}</td>
-            <td>{{ instance.thang }}</td>
-            <td>{{ instance.madaily }}</td>
-            <td>{{ instance.sophieuxuat }}</td>
-            <td>{{ instance.tongtrigia }}</td>
-            <td>{{ instance.tyle }}</td>
-        </tr>
+        {% if pctnhs %}
+        {% for instance in pctnhs %}
+            <tr>
+                <td>{{ instance.mact_pnh }}</td>
+                <td>{{ instance.maphieunhap }}</td>
+                <td>{{ instance.mamathang }}</td>
+                <td>{{ instance.soluongnhap }}</td>
+                <td>{{ instance.dongianhap }}</td>
+                <td>{{ instance.thanhtien }}</td>
+                <td> <button type="button" class="btn btn-success" data-toggle="modal" data-target="#CT_PNHModalUpdate" data-whatever="{{instance.mact_pnh}}">EDIT</button> </td>
+                <td> <button type="button" class="btn btn-danger" onclick="deleteCT_PNH('{{instance.mact_pnh}}')">DELETE</button> </td>
+            </tr>
         {% endfor %}
         {% endif %}
     </tbody>
 </table>
+
+<!--MODAL FOR CREATING-->
+<div class="modal fade" id="CT_PNHModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">THÊM CHI TIẾT PHIẾU NHẬP HÀNG</h4>
+            </div>
+            <form id="CT_PNH_Create" action="" method="get">
+                <div class="modal-body">
+                    <label for="mapnhForm">MÃ PHIẾU NHẬP</label> <br>
+                    <select id="mapnhForm">
+                        {% if mapnhs %}
+                        {% for option in mapnhs %}
+                        <option val="{{option.maphieunhap}}">{{option.maphieunhap}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br>
+                    <label for="mamhForm">MÃ MẶT HÀNG</label> <br>
+                    <select id="mamhForm">
+                        {% if mamhs %}
+                        {% for option in mamhs %}
+                        <option val="{{option.mamathang}}">{{option.mamathang}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br>
+                    <label for="slnhapForm">SỐ LƯỢNG NHẬP</label> <br>
+                    <input type="text" name="slnhapForm" id="slnhapForm" required> <br>
+                    <label for="dgnhapForm">ĐƠN GIÁ NHẬP</label> <br>
+                    <input type="text" name="dgnhapForm" id="dgnhapForm" required> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--MODAL FOR UPDATING-->
+<div class="modal fade" id="CT_PNHModalUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabelUpdate">CẬP NHẬT CHI TIẾT PHIẾU NHẬP HÀNG</h4>
+            </div>
+            <form id="CT_PNH_Update">
+                <div class="modal-body">
+                    <input type="hidden" name="idFormUpdate" id="idFormUpdate">
+                    <label for="mapnhForm">MÃ PHIẾU NHẬP</label> <br>
+                    <select id="mapnhForm">
+                        {% if mapnhs %}
+                        {% for option in mapnhs %}
+                        <option val="{{option.maphieunhap}}">{{option.maphieunhap}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br>
+                    <label for="mamhForm">MÃ MẶT HÀNG</label> <br>
+                    <select id="mamhForm">
+                        {% if mamhs %}
+                        {% for option in mamhs %}
+                        <option val="{{option.mamathang}}">{{option.mamathang}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select> <br>
+                    <label for="slnhapForm">SỐ LƯỢNG NHẬP</label> <br>
+                    <input type="text" name="slnhapForm" id="slnhapForm" required> <br>
+                    <label for="dgnhapForm">ĐƠN GIÁ NHẬP</label> <br>
+                    <input type="text" name="dgnhapForm" id="dgnhapForm" required> <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block javascript %}
 <script>
-<!--    Add , Update, Remove -->
+$('#CT_PNH_Create').submit(function(){
+    let mapnh = $('input[name="mapnhForm"]').val().trim();
+    let mamh = $('input[name="mamhForm"]').val().trim();
+    let slnhap = $('input[name="slnhapForm"]').val().trim();
+    let dgnhap = $('input[name="dgnhapForm"]').val().trim();
+
+    if(mapnh && mamh && slnhap && dgnhap)
+    {
+        $.ajax({
+            url: "{% url 'pctnh_create' %}",
+            data: {
+                'mapnh': mapnh,
+                'mamh': mamh,
+                'slnhap': slnhap,
+                'dgnhap': dgnhap,
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.ct_pnh)
+                {
+                    window.location.href = "{% url 'pctnh_page' %}";
+                }
+                else
+                {
+                    alert("CHI TIẾT PHIẾU NHẬP HÀNG ĐÃ TỒN TẠI");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#CT_PNHModal').modal('hide');
+    return false;
+});
+
+function deleteCT_PNH(mactpnh)
+{
+    $.ajax({
+        url: "{% url 'pctnh_remove' %}",
+        data: {
+            'id': mactpnh
+        },
+        datatype: 'json',
+        success: function(data)
+        {
+            if(data.deleted)
+            {
+                window.location.href = "{% url 'pctnh_page' %}";
+            }
+            else
+            {
+                alert("XÓA THẤT BẠI, HÃY THỬ LẠI.");
+            }
+        }
+    });
+}
+
+// LOAD DATA TO MODAL BEFORE UPDATING
+$('#CT_PNHModalUpdate').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget); // Button that triggered the modal - when model appear.
+  var recipient = button.data('whatever'); // Extract info from data-* attributes (data that sent to modal).
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this);
+  modal.find('.modal-body #idFormUpdate').val(recipient);
+});
+
+$('#CT_PNH_Update').submit(function(){
+    let mactpnh = $('input[name="idFormUpdate"]').val().trim();
+    let mapnh = $('input[name="mapnhForm"]').val().trim();
+    let mamh = $('input[name="mamhForm"]').val().trim();
+    let slnhap = $('input[name="slnhapForm"]').val().trim();
+    let dgnhap = $('input[name="dgnhapForm"]').val().trim();
+
+    if(mactpnh && mapnh && mamh && slnhap && dgnhap)
+    {
+        $.ajax({
+            url: "{% url 'pctnh_update' %}",
+            data: {
+                'id': mactpnh,
+                'mapnh': mapnh,
+                'mamh': mamh,
+                'slnhap': slnhap,
+                'dgnhap': dgnhap,
+            },
+            datatype: 'json',
+            success: function(data)
+            {
+                if(data.ct_pnh)
+                {
+                    window.location.href = "{% url 'pctnh_page' %}";
+                }
+                else
+                {
+                    alert("CHI TIẾT PHIẾU NHẬP HÀNG ĐÃ TỒN TẠI");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert("GIÁ TRỊ KHÔNG HỢP LỆ.");
+    }
+    $('#CT_PNHModalUpdate').modal('hide');
+    return false;
+});
 </script>
 {% endblock %}
