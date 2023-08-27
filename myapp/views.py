@@ -957,7 +957,7 @@ def PCTNHView(request):
     list_mamh = Mathang.objects.all()
     list_ct_pnh = CtPnh.objects.all()
     
-    return render(request, 'QLCDL/pctnh.html', {'pctnhs': list_ct_pnh, 'mapnhs': list_mapnh, 'mamhs': list_mamh})
+    return render(request, 'pctnh.html', {'pctnhs': list_ct_pnh, 'mapnhs': list_mapnh, 'mamhs': list_mamh})
 
 class CreatePCTNH(View):
     def get(self, request):
@@ -1044,7 +1044,7 @@ def PCTXHView(request):
     list_mapxh = Phieuxuathang.objects.all()
     list_mamh = Mathang.objects.all()
     list_ct_pxh = CtPxh.objects.all()
-    return render(request, 'QLCDL/pctxh.html', {'pctxhs': list_ct_pxh, 'mapxhs': list_mapxh, 'mamhs': list_mamh})
+    return render(request, 'pctxh.html', {'pctxhs': list_ct_pxh, 'mapxhs': list_mapxh, 'mamhs': list_mamh})
 
 class CreatePCTXH(View):
     def get(self, request):
