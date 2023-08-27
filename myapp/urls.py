@@ -39,8 +39,8 @@ urlpatterns = [
     # URL for bills
     path("pnh/", views.PNHView.as_view(), name="pnh_page"),
     path("pxh/", views.PXHView, name="pxh_page"),
-    path("pctnh/", views.PCTNHView.as_view(), name="pctnh_page"),
-    path("pctxh/", views.PCTXHView.as_view(), name="pctxh_page"),
+    path("pctnh/", views.PCTNHView, name="pctnh_page"),
+    path("pctxh/", views.PCTXHView, name="pctxh_page"),
     path("ptt/", views.PTTView, name="ptt_page"),
 
     # URL for manipulating PNH
@@ -53,6 +53,16 @@ urlpatterns = [
     path("pxh/remove", views.RemovePXH.as_view(), name="pxh_remove"),
     path("pxh/update", views.UpdatePXH.as_view(), name="pxh_update"),
 
+    # URL for manipulating CT_PNH
+    path("pctnh/create", views.CreatePCTNH.as_view(), name="pctnh_create"),
+    path("pctnh/remove", views.RemovePCTNH.as_view(), name="pctnh_remove"),
+    path("pctnh/update", views.UpdatePCTNH.as_view(), name="pctnh_update"),
+
+    # URL for manipulating CT_PXH
+    path("pctxh/create", views.CreatePCTXH.as_view(), name="pctxh_create"),
+    path("pctxh/remove", views.RemovePCTXH.as_view(), name="pctxh_remove"),
+    path("pctxh/update", views.UpdatePCTXH.as_view(), name="pctxh_update"),
+    
     # URL for manipulating PTT
     path("ptt/create", views.CreatePTT.as_view(), name="ptt_create"),
     path("ptt/remove", views.RemovePTT.as_view(), name="ptt_remove"),
