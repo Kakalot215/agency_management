@@ -951,27 +951,178 @@ class UpdatePXH(View):
 
         return JsonResponse(data)
 
-class PCTNHView(ListView):
-    model = CtPnh
-    template_name = 'pctnh.html'
-    context_object_name = 'ctpnhs'
-class CreatePCTNH(View):
-    pass
-class RemovePCTNH(View):
-    pass
-class UpdatePCTNH(View):
-    pass
+# manipulate PCTNH's data
+def PCTNHView(request):
+    list_mapnh = Phieunhaphang.objects.all()
+    list_mamh = Mathang.objects.all()
+    list_ct_pnh = CtPnh.objects.all()
+    
+    return render(request, 'QLCDL/pctnh.html', {'pctnhs': list_ct_pnh, 'mapnhs': list_mapnh, 'mamhs': list_mamh})
 
-class PCTXHView(ListView):
-    model = CtPxh
-    template_name = 'pctxh.html'
-    context_object_name = 'ctpxhs'
+class CreatePCTNH(View):
+    def get(self, request):
+        mapnh = request.GET.get('mapnh', None)
+        mamh = request.GET.get('mamh', None)
+        slnhap = request.GET.get('slnhap', None)
+        dgnhap = request.GET.get('dgnhap', None)
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT MACT_PNH FROM CT_PNH")
+        mactpnh_all = cursor.fetchall()
+        cursor.close()
+
+        number = []
+        lst = []
+
+        for i in mactpnh_all:
+            lst.append(i[0])
+
+        for i in lst:
+            i = i.replace(" ", '')
+            temp = i[5:]
+            number.append(int(temp))
+
+        max = number[0]
+        for i in number:
+            if i > max:
+                max = i
+
+        max += 1
+        mactpnh = 'CTPNH' + str(max)
+
+        cursor = connection().cursor()
+        cursor.execute("INSERT INTO CT_PNH VALUES(?,?,?,?,?,?)", mactpnh, mapnh, mamh, slnhap, dgnhap, None)
+        cursor.commit()
+        cursor.close()
+
+        mathang = {
+            'ct_pnh': mactpnh,
+        }
+
+        data = {
+            'ct_pnh': mathang
+        }
+
+        return JsonResponse(data)
+
+class RemovePCTNH(View):
+    def get(self, request):
+        id1 = request.GET.get('id', None)
+
+        cursor = connection().cursor()
+        cursor.execute("DELETE FROM CT_PNH WHERE MACT_PNH = ?", id1)
+        cursor.commit()
+        cursor.close()
+
+        data = {
+            'deleted': True
+        }
+        return JsonResponse(data)
+
+class UpdatePCTNH(View):
+    def get(self, request):
+        id1 = request.GET.get('id', None)
+        mapnh1 = request.GET.get('mapnh', None)
+        mamh1 = request.GET.get('mamh', None)
+        slnhap1 = request.GET.get('slnhap', None)
+        dgnhap1 = request.GET.get('dgnhap', None)
+
+        cursor = connection().cursor()
+        cursor.execute("UPDATE CT_PNH SET MAPHIEUNHAP=?, MAMATHANG=?, SOLUONGNHAP=?, DONGIANHAP=? WHERE MACT_PNH=?", mapnh1, mamh1, slnhap1, dgnhap1, id1)
+        cursor.commit()
+        cursor.close()
+
+        ct_pnh = {'ct_pnh': id1}
+        data = {
+            'ct_pnh': ct_pnh
+        }
+
+        return JsonResponse(data)
+
+# manipulate PCTXH's data
+def PCTXHView(request):
+    list_mapxh = Phieuxuathang.objects.all()
+    list_mamh = Mathang.objects.all()
+    list_ct_pxh = CtPxh.objects.all()
+    return render(request, 'QLCDL/pctxh.html', {'pctxhs': list_ct_pxh, 'mapxhs': list_mapxh, 'mamhs': list_mamh})
+
 class CreatePCTXH(View):
-    pass
+    def get(self, request):
+        mapxh = request.GET.get('mapxh', None)
+        mamh = request.GET.get('mamh', None)
+        slxuat = request.GET.get('slxuat', None)
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT MACT_PXH FROM CT_PXH")
+        mactpxh_all = cursor.fetchall()
+        cursor.close()
+
+        number = []
+        lst = []
+
+        for i in mactpxh_all:
+            lst.append(i[0])
+
+        for i in lst:
+            i = i.replace(" ", '')
+            temp = i[5:]
+            number.append(int(temp))
+
+        max = number[0]
+        for i in number:
+            if i > max:
+                max = i
+
+        max += 1
+        mactpxh = 'CTPXH' + str(max)
+
+        cursor = connection().cursor()
+        cursor.execute("INSERT INTO CT_PXH VALUES(?,?,?,?,?,?)", mactpxh, mapxh, mamh, slxuat, None, None)
+        cursor.commit()
+        cursor.close()
+
+        mathang = {
+            'ct_pxh': mactpxh,
+        }
+
+        data = {
+            'ct_pxh': mathang
+        }
+
+        return JsonResponse(data)
+
 class RemovePCTXH(View):
-    pass
+    def get(self, request):
+        id1 = request.GET.get('id', None)
+
+        cursor = connection().cursor()
+        cursor.execute("DELETE FROM CT_PXH WHERE MACT_PXH = ?", id1)
+        cursor.commit()
+        cursor.close()
+
+        data = {
+            'deleted': True
+        }
+        return JsonResponse(data)
+
 class UpdatePCTXH(View):
-    pass
+    def get(self, request):
+        id1 = request.GET.get('id', None)
+        mapxh1 = request.GET.get('mapxh', None)
+        mamh1 = request.GET.get('mamh', None)
+        slxuat1 = request.GET.get('slxuat', None)
+
+        cursor = connection().cursor()
+        cursor.execute("UPDATE CT_PXH SET MAPHIEUXUAT=?, MAMATHANG=?, SOLUONGXUAT=? WHERE MACT_PXH=?", mapxh1, mamh1, slxuat1, id1)
+        cursor.commit()
+        cursor.close()
+
+        ct_pxh = {'ct_pxh': id1}
+        data = {
+            'ct_pxh': ct_pxh
+        }
+
+        return JsonResponse(data)
 
 def PTTView(request):
     list_daily = Daily.objects.all()
