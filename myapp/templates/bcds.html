@@ -258,5 +258,64 @@ $('#BCDS_Update').submit(function(){
     $('#BCDSModalUpdate').modal('hide');
     return false;
 });
+$('#finding').keypress(function(event){
+    let findingInfo = $(this).val();
+    if(event.which == 13)
+    {
+        $.ajax({
+            url: "{% url 'bcds_finding' %}",
+            data: {
+                'info': findingInfo
+            },
+            datatype: 'json',
+            success: function(bcds)
+            {
+                if(bcds.bcds == "empty")
+                {
+                    alert("KHÔNG TÌM THẤY!");
+                }
+                else
+                {
+                    $('#bcds_table tr').remove();
+                    appendBCDSTable(bcds);
+                }
+            }
+        });
+        event.preventDefault();
+    }
+})
+function appendBCDSTable(bcds)
+{
+    $('#bcds_table > thead').append(
+    `
+        <tr>    
+            <th>MÃ BCDS</th>
+            <th>THÁNG</th>
+            <th>MÃ ĐL</th>
+            <th>SỐ PHIẾU XUẤT</th>
+            <th>TỔNG GIÁ TRỊ</th>
+            <th>TỶ LỆ</th>
+            <th></th>
+            <th></th>
+        </tr>
+    `
+    );
+    
+    for (let i = 0; i < bcds.bcds.length; i++)
+    {
+        $('#bcds_table > tbody:last-child').append(`
+        <tr>
+            <td>${bcds.bcds[i][0]}</td>
+            <td>${bcds.bcds[i][1]}</td>
+            <td>${bcds.bcds[i][2]}</td>
+            <td>${bcds.bcds[i][3]}</td>
+            <td>${bcds.bcds[i][4]}</td>
+            <td>${bcds.bcds[i][5]}</td>
+            <td> <button class="btn btn-success" data-toggle="modal" data-target="#BCDSModalUpdate" data-whatever="${bcds.bcds[i][0]}">EDIT</button> </td>
+            <td> <button class="btn btn-danger" onclick="deleteBCDS('${bcds.bcds[i][0]}')">DELETE</button> </td>
+        </tr>
+        `);       
+    }
+}
 </script>
 {% endblock %}
