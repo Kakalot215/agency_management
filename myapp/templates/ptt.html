@@ -213,5 +213,60 @@ $('#PTT_Update').submit(function(){
     $('#PTTModalUpdate').modal('hide');
     return false;
 });
+$('#finding').keypress(function(event){
+    let findingInfo = $(this).val();
+    if(event.which == 13)
+    {
+        $.ajax({
+            url: "{% url 'ptt_finding' %}",
+            data: {
+                'info': findingInfo
+            },
+            datatype: 'json',
+            success: function(ptt)
+            {
+                if(ptt.ptt == "empty")
+                {
+                    alert("KHÔNG TÌM THẤY!");
+                }
+                else
+                {
+                    $('#ptt_table tr').remove();
+                    appendPTTTable(ptt);
+                }
+            }
+        });
+        event.preventDefault();
+    }
+})
+function appendPTTTable(ptt)
+{
+    $('#ptt_table > thead').append(
+    `
+        <tr>    
+            <th>MÃ PHIẾU THU TIỀN</th>
+            <th>MÃ ĐẠI LÝ</th>
+            <th>NGÀY THU TIỀN</th>
+            <th>SỐ TIỀN THU</th>
+            <th></th>
+            <th></th>
+        </tr>
+    `
+    );
+    
+    for (let i = 0; i < ptt.ptt.length; i++)
+    {
+        $('#ptt_table > tbody:last-child').append(`
+        <tr>
+            <td>${ptt.ptt[i][0]}</td>
+            <td>${ptt.ptt[i][1]}</td>
+            <td>${ptt.ptt[i][2]}</td>
+            <td>${ptt.ptt[i][3]}</td>
+            <td> <button class="btn btn-success" data-toggle="modal" data-target="#PTTModalUpdate" data-whatever="${ptt.ptt[i][0]}">EDIT</button> </td>
+            <td> <button class="btn btn-danger" onclick="deletePTT('${ptt.ptt[i][0]}')">DELETE</button> </td>
+        </tr>
+        `);       
+    }
+}
 </script>
 {% endblock %}
