@@ -30,3 +30,8 @@
 24-8-2023 - 8:33 - Kakalot
 1. I have posted 'bccn + bcds + daily + regulation' (templates), updated urls.py and views.py files.
 2. I think almost the basic stuff are ok (for 'XEM BÁO CÁO' and 'BÁO CÁO' button only). I will develop finding feature and improve other functionalities (only for 'XEM BÁO CÁO' and 'BÁO CÁO' button only too).
+
+_____________________________
+29/8/2023 - 16:02 - Kakalot
+I think we're done!
+Test this app if U need
