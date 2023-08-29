@@ -35,6 +35,7 @@ def connection():
     connect_key = "Driver={ODBC Driver 17 for SQL Server}; Server=localhost; Database=QLCDL; Trusted_Connection=yes;"
     conn = pyodbc.connect(connect_key)
     return conn
+# manipulate Daily's data
 def webpage1(request):
     # Function used for loging in
     if request.method == "POST":
@@ -53,6 +54,7 @@ def webpage1(request):
         messages.error(request, "LogIn failed!")
 
     return render(request, "login.html", {})
+# manipulate Daily's data
 def webpage2(request):
     # Registering a new account
     if request.method == "POST":
@@ -266,6 +268,39 @@ class UpdateDaily(View):
         }
 
         return JsonResponse(data)
+class FindingDaily(View):
+    def get(self, request):
+        info = request.GET.get('info', None)
+        inf = '%' + str(info) + '%'
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT * FROM DAILY WHERE MADAILY LIKE ? OR TENDAILY LIKE ? OR MALOAIDAILY LIKE ? OR DIENTHOAI LIKE ? OR DIACHI LIKE ? OR MAQUAN LIKE ? OR NGAYTIEPNHAN LIKE ? OR SOTIENNO LIKE ?", inf, inf, inf, inf, inf, inf, inf, inf)
+        dl_data = cursor.fetchall()
+        cursor.close()
+
+        if(dl_data == []):
+            dl = {
+                'dl': 'empty'
+            }
+            return JsonResponse(dl)
+        
+        data = []
+        for i in dl_data:
+            lst = []
+            lst.append(i[0])
+            lst.append(i[1])
+            lst.append(i[2])
+            lst.append(i[3])
+            lst.append(i[4])
+            lst.append(i[5])
+            lst.append(i[6])
+            lst.append(i[7])
+            data.append(lst)
+        
+        dl = {
+            'dl': data
+        }
+        return JsonResponse(dl)
 # manipulate LOAIDAILY's data
 class LoaidailyView(ListView):
     model = Loaidaily
@@ -372,6 +407,9 @@ class UpdateLoaidaily(View):
                 }
                 return JsonResponse(data)
 
+        print(id1)
+        print(name1)
+        print(debt1)
         obj = Loaidaily.objects.get(maloaidaily=id1)
         obj.tenloaidaily = name1
         obj.sonotoida = debt1
@@ -382,6 +420,34 @@ class UpdateLoaidaily(View):
             'ldl': ldl
         }
         return JsonResponse(data)
+class FindingLoaidaily(View):
+    def get(self, request):
+        info = request.GET.get('info', None)
+        inf = '%' + str(info) + '%'
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT * FROM LOAIDAILY WHERE MALOAIDAILY LIKE ? OR TENLOAIDAILY LIKE ? OR SONOTOIDA LIKE ?", inf, inf, inf)
+        ldl_data = cursor.fetchall()
+        cursor.close()
+
+        if(ldl_data == []):
+            ldl = {
+                'ldl': 'empty'
+            }
+            return JsonResponse(ldl)
+        
+        data = []
+        for i in ldl_data:
+            lst = []
+            lst.append(i[0])
+            lst.append(i[1])
+            lst.append(i[2])
+            data.append(lst)
+        
+        ldl = {
+            'ldl': data
+        }
+        return JsonResponse(ldl)
 # manipulate QUAN's data
 class QuanView(ListView):
     model = Quan
@@ -488,6 +554,33 @@ class UpdateQuan(View):
         }
 
         return JsonResponse(data)
+class FindQuan(View):
+    def get(self, request):
+        info = request.GET.get('info', None)
+        inf = '%' + str(info) + '%'
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT * FROM QUAN WHERE MAQUAN LIKE ? OR TENQUAN LIKE ?", inf, inf)
+        quan_data = cursor.fetchall()
+        cursor.close()
+
+        if(quan_data == []):
+            data_quan = {
+                'data_quan': 'empty'
+            }
+            return JsonResponse(data_quan)
+        
+        data = []
+        for i in quan_data:
+            lst = []
+            lst.append(i[0])
+            lst.append(i[1])
+            data.append(lst)
+        
+        data_quan = {
+            'data_quan': data
+        }
+        return JsonResponse(data_quan)
 # manipulate Mathang's data
 class MathangView(ListView):
     model = Mathang
@@ -621,6 +714,35 @@ class UpdateMathang(View):
             'mathang': mathang
         }
         return JsonResponse(data)
+class FindingMathang(View):
+    def get(self, request):
+        info = request.GET.get('info', None)
+        inf = '%' + str(info) + '%'
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT * FROM MATHANG WHERE MAMATHANG LIKE ? OR TENMATHANG LIKE ? OR MADVT LIKE ? OR SOLUONGTON LIKE ?", inf, inf, inf, inf)
+        mh_data = cursor.fetchall()
+        cursor.close()
+
+        if(mh_data == []):
+            mh = {
+                'mh': 'empty'
+            }
+            return JsonResponse(mh)
+        
+        data = []
+        for i in mh_data:
+            lst = []
+            lst.append(i[0])
+            lst.append(i[1])
+            lst.append(i[2])
+            lst.append(i[3])
+            data.append(lst)
+        
+        mh = {
+            'mh': data
+        }
+        return JsonResponse(mh)
 # manipulate DVT's data
 class DVTView(ListView):
     model = Dvt
@@ -740,12 +862,38 @@ class UpdateDVT(View):
             'dvt': dvt
         }
         return JsonResponse(data)
+class FindDVT(View):
+    def get(self, request):
+        info = request.GET.get('info', None)
+        inf = '%' + str(info) + '%'
 
+        cursor = connection().cursor()
+        cursor.execute("SELECT * FROM DVT WHERE MADVT LIKE ? OR TENDVT LIKE ?", inf, inf)
+        dvt_data = cursor.fetchall()
+        cursor.close()
+
+        if(dvt_data == []):
+            dvt = {
+                'dvt': 'empty'
+            }
+            return JsonResponse(dvt)
+        
+        data = []
+        for i in dvt_data:
+            lst = []
+            lst.append(i[0])
+            lst.append(i[1])
+            data.append(lst)
+        
+        dvt = {
+            'dvt': data
+        }
+        return JsonResponse(dvt)
+# manipulate PNH's data
 class PNHView(ListView):
     model = Phieunhaphang
     template_name = 'pnh.html'
     context_object_name = 'pnhs'
-
 class CreatePNH(View):
     def get(self, request):
         ngaylp = request.GET.get('date', None)
@@ -801,7 +949,6 @@ class CreatePNH(View):
         }
 
         return JsonResponse(data)
-
 class RemovePNH(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -827,7 +974,6 @@ class RemovePNH(View):
             'deleted': True
         }
         return JsonResponse(data)
-
 class UpdatePNH(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -844,12 +990,39 @@ class UpdatePNH(View):
         }
 
         return JsonResponse(data)
+class FindingPNH(View):
+    def get(self, request):
+        info = request.GET.get('info', None)
+        inf = '%' + str(info) + '%'
 
+        cursor = connection().cursor()
+        cursor.execute("SELECT * FROM PHIEUNHAPHANG WHERE MAPHIEUNHAP LIKE ? OR NGAYLAPPHIEU LIKE ? OR TONGTIEN LIKE ?", inf, inf, inf)
+        pnh_data = cursor.fetchall()
+        cursor.close()
+
+        if(pnh_data == []):
+            pnh = {
+                'pnh': 'empty'
+            }
+            return JsonResponse(pnh)
+        
+        data = []
+        for i in pnh_data:
+            lst = []
+            lst.append(i[0])
+            lst.append(i[1])
+            lst.append(i[2])
+            data.append(lst)
+        
+        pnh = {
+            'pnh': data
+        }
+        return JsonResponse(pnh)
+# manipulate PXH's data
 def PXHView(request):
     list_daily = Daily.objects.all()
     list_pxh = Phieuxuathang.objects.all()
     return render(request, 'pxh.html', {'pxhs': list_pxh, 'dailys': list_daily})
-
 class CreatePXH(View):
     def get(self, request):
         dl_id1 = request.GET.get('madl', None)
@@ -906,7 +1079,6 @@ class CreatePXH(View):
         }
 
         return JsonResponse(data)
-
 class RemovePXH(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -932,7 +1104,6 @@ class RemovePXH(View):
             'deleted': True
         }
         return JsonResponse(data)
-
 class UpdatePXH(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -950,185 +1121,40 @@ class UpdatePXH(View):
         }
 
         return JsonResponse(data)
-
-# manipulate PCTNH's data
-def PCTNHView(request):
-    list_mapnh = Phieunhaphang.objects.all()
-    list_mamh = Mathang.objects.all()
-    list_ct_pnh = CtPnh.objects.all()
-    
-    return render(request, 'pctnh.html', {'pctnhs': list_ct_pnh, 'mapnhs': list_mapnh, 'mamhs': list_mamh})
-
-class CreatePCTNH(View):
+class FindingPXH(View):
     def get(self, request):
-        mapnh = request.GET.get('mapnh', None)
-        mamh = request.GET.get('mamh', None)
-        slnhap = request.GET.get('slnhap', None)
-        dgnhap = request.GET.get('dgnhap', None)
+        info = request.GET.get('info', None)
+        inf = '%' + str(info) + '%'
 
         cursor = connection().cursor()
-        cursor.execute("SELECT MACT_PNH FROM CT_PNH")
-        mactpnh_all = cursor.fetchall()
+        cursor.execute("SELECT * FROM PHIEUXUATHANG WHERE MAPHIEUXUAT LIKE ? OR MADAILY LIKE ? OR NGAYLAPPHIEU LIKE ? OR TONGTIEN LIKE ?", inf, inf, inf, inf)
+        pxh_data = cursor.fetchall()
         cursor.close()
 
-        number = []
-        lst = []
-
-        for i in mactpnh_all:
+        if(pxh_data == []):
+            pxh = {
+                'pxh': 'empty'
+            }
+            return JsonResponse(pxh)
+        
+        data = []
+        for i in pxh_data:
+            lst = []
             lst.append(i[0])
-
-        for i in lst:
-            i = i.replace(" ", '')
-            temp = i[5:]
-            number.append(int(temp))
-
-        max = number[0]
-        for i in number:
-            if i > max:
-                max = i
-
-        max += 1
-        mactpnh = 'CTPNH' + str(max)
-
-        cursor = connection().cursor()
-        cursor.execute("INSERT INTO CT_PNH VALUES(?,?,?,?,?,?)", mactpnh, mapnh, mamh, slnhap, dgnhap, None)
-        cursor.commit()
-        cursor.close()
-
-        mathang = {
-            'ct_pnh': mactpnh,
+            lst.append(i[1])
+            lst.append(i[2])
+            lst.append(i[3])
+            data.append(lst)
+        
+        pxh = {
+            'pxh': data
         }
-
-        data = {
-            'ct_pnh': mathang
-        }
-
-        return JsonResponse(data)
-
-class RemovePCTNH(View):
-    def get(self, request):
-        id1 = request.GET.get('id', None)
-
-        cursor = connection().cursor()
-        cursor.execute("DELETE FROM CT_PNH WHERE MACT_PNH = ?", id1)
-        cursor.commit()
-        cursor.close()
-
-        data = {
-            'deleted': True
-        }
-        return JsonResponse(data)
-
-class UpdatePCTNH(View):
-    def get(self, request):
-        id1 = request.GET.get('id', None)
-        mapnh1 = request.GET.get('mapnh', None)
-        mamh1 = request.GET.get('mamh', None)
-        slnhap1 = request.GET.get('slnhap', None)
-        dgnhap1 = request.GET.get('dgnhap', None)
-
-        cursor = connection().cursor()
-        cursor.execute("UPDATE CT_PNH SET MAPHIEUNHAP=?, MAMATHANG=?, SOLUONGNHAP=?, DONGIANHAP=? WHERE MACT_PNH=?", mapnh1, mamh1, slnhap1, dgnhap1, id1)
-        cursor.commit()
-        cursor.close()
-
-        ct_pnh = {'ct_pnh': id1}
-        data = {
-            'ct_pnh': ct_pnh
-        }
-
-        return JsonResponse(data)
-
-# manipulate PCTXH's data
-def PCTXHView(request):
-    list_mapxh = Phieuxuathang.objects.all()
-    list_mamh = Mathang.objects.all()
-    list_ct_pxh = CtPxh.objects.all()
-    return render(request, 'pctxh.html', {'pctxhs': list_ct_pxh, 'mapxhs': list_mapxh, 'mamhs': list_mamh})
-
-class CreatePCTXH(View):
-    def get(self, request):
-        mapxh = request.GET.get('mapxh', None)
-        mamh = request.GET.get('mamh', None)
-        slxuat = request.GET.get('slxuat', None)
-
-        cursor = connection().cursor()
-        cursor.execute("SELECT MACT_PXH FROM CT_PXH")
-        mactpxh_all = cursor.fetchall()
-        cursor.close()
-
-        number = []
-        lst = []
-
-        for i in mactpxh_all:
-            lst.append(i[0])
-
-        for i in lst:
-            i = i.replace(" ", '')
-            temp = i[5:]
-            number.append(int(temp))
-
-        max = number[0]
-        for i in number:
-            if i > max:
-                max = i
-
-        max += 1
-        mactpxh = 'CTPXH' + str(max)
-
-        cursor = connection().cursor()
-        cursor.execute("INSERT INTO CT_PXH VALUES(?,?,?,?,?,?)", mactpxh, mapxh, mamh, slxuat, None, None)
-        cursor.commit()
-        cursor.close()
-
-        mathang = {
-            'ct_pxh': mactpxh,
-        }
-
-        data = {
-            'ct_pxh': mathang
-        }
-
-        return JsonResponse(data)
-
-class RemovePCTXH(View):
-    def get(self, request):
-        id1 = request.GET.get('id', None)
-
-        cursor = connection().cursor()
-        cursor.execute("DELETE FROM CT_PXH WHERE MACT_PXH = ?", id1)
-        cursor.commit()
-        cursor.close()
-
-        data = {
-            'deleted': True
-        }
-        return JsonResponse(data)
-
-class UpdatePCTXH(View):
-    def get(self, request):
-        id1 = request.GET.get('id', None)
-        mapxh1 = request.GET.get('mapxh', None)
-        mamh1 = request.GET.get('mamh', None)
-        slxuat1 = request.GET.get('slxuat', None)
-
-        cursor = connection().cursor()
-        cursor.execute("UPDATE CT_PXH SET MAPHIEUXUAT=?, MAMATHANG=?, SOLUONGXUAT=? WHERE MACT_PXH=?", mapxh1, mamh1, slxuat1, id1)
-        cursor.commit()
-        cursor.close()
-
-        ct_pxh = {'ct_pxh': id1}
-        data = {
-            'ct_pxh': ct_pxh
-        }
-
-        return JsonResponse(data)
-
+        return JsonResponse(pxh)
+# manipulate PTT's data
 def PTTView(request):
     list_daily = Daily.objects.all()
     list_ptt = Phieuthutien.objects.all()
     return render(request, 'ptt.html', {'ptts': list_ptt, 'dailys': list_daily})
-
 class CreatePTT(View):
     def get(self, request):
         dl_id1 = request.GET.get('madl', None)
@@ -1171,7 +1197,6 @@ class CreatePTT(View):
             'ptt': mathang
         }
         return JsonResponse(data)
-
 class RemovePTT(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -1185,7 +1210,6 @@ class RemovePTT(View):
             'deleted': True
         }
         return JsonResponse(data)
-
 class UpdatePTT(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -1204,7 +1228,35 @@ class UpdatePTT(View):
         }
 
         return JsonResponse(data)
+class FindingPTT(View):
+    def get(self, request):
+        info = request.GET.get('info', None)
+        inf = '%' + str(info) + '%'
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT * FROM PHIEUTHUTIEN WHERE MAPHIEUTHUTIEN LIKE ? OR MADAILY LIKE ? OR NGAYTHUTIEN LIKE ? OR SOTIENTHU LIKE ?", inf, inf, inf, inf)
+        ptt_data = cursor.fetchall()
+        cursor.close()
+
+        if(ptt_data == []):
+            ptt = {
+                'ptt': 'empty'
+            }
+            return JsonResponse(ptt)
         
+        data = []
+        for i in ptt_data:
+            lst = []
+            lst.append(i[0])
+            lst.append(i[1])
+            lst.append(i[2])
+            lst.append(i[3])
+            data.append(lst)
+        
+        ptt = {
+            'ptt': data
+        }
+        return JsonResponse(ptt)
 # manipulate BCCN's data
 def BCCNView(request):
     list_daily = Daily.objects.all() 
@@ -1307,7 +1359,37 @@ class UpdateBCCN(View):
         }
 
         return JsonResponse(data)
+class FindingBCCN(View):
+    def get(self, request):
+        info = request.GET.get('info', None)
+        inf = '%' + str(info) + '%'
 
+        cursor = connection().cursor()
+        cursor.execute("SELECT * FROM BAOCAOCONGNO WHERE MABCCONGNO LIKE ? OR THANG LIKE ? OR MADAILY LIKE ? OR NODAU LIKE ? OR PHATSINH LIKE ? OR NOCUOI LIKE ?", inf, inf, inf, inf, inf, inf)
+        bccn_data = cursor.fetchall()
+        cursor.close()
+
+        if(bccn_data == []):
+            bccn = {
+                'bccn': 'empty'
+            }
+            return JsonResponse(bccn)
+        
+        data = []
+        for i in bccn_data:
+            lst = []
+            lst.append(i[0])
+            lst.append(i[1])
+            lst.append(i[2])
+            lst.append(i[3])
+            lst.append(i[4])
+            lst.append(i[5])
+            data.append(lst)
+        
+        bccn = {
+            'bccn': data
+        }
+        return JsonResponse(bccn)
 # manipulate BCDS's data
 def BCDSView(request):
     list_bcds = Baocaodoanhso.objects.all()
@@ -1412,8 +1494,38 @@ class UpdateBCDS(View):
         }
 
         return JsonResponse(data)
+class FindingBCDS(View):
+    def get(self, request):
+        info = request.GET.get('info', None)
+        inf = '%' + str(info) + '%'
 
-# manipulating with THAMSO's data
+        cursor = connection().cursor()
+        cursor.execute("SELECT * FROM BAOCAODOANHSO WHERE MABCDOANHSO LIKE ? OR THANG LIKE ? OR MADAILY LIKE ? OR SOPHIEUXUAT LIKE ? OR TONGTRIGIA LIKE ? OR TYLE LIKE ?", inf, inf, inf, inf, inf, inf)
+        bcds_data = cursor.fetchall()
+        cursor.close()
+
+        if(bcds_data == []):
+            bcds = {
+                'bcds': 'empty'
+            }
+            return JsonResponse(bcds)
+        
+        data = []
+        for i in bcds_data:
+            lst = []
+            lst.append(i[0])
+            lst.append(i[1])
+            lst.append(i[2])
+            lst.append(i[3])
+            lst.append(i[4])
+            lst.append(i[5])
+            data.append(lst)
+        
+        bcds = {
+            'bcds': data
+        }
+        return JsonResponse(bcds)
+# manipulate REG's data
 class REGView(ListView):
     model = Thamso
     template_name = 'regulations.html'
@@ -1433,4 +1545,230 @@ class UpdateREG(View):
             'updated': dltoida
         }
         return JsonResponse(data)
+# manipulate PCTNH's data
+def PCTNHView(request):
+    list_mapnh = Phieunhaphang.objects.all()
+    list_mamh = Mathang.objects.all()
+    list_ct_pnh = CtPnh.objects.all()
     
+    return render(request, 'ctpnh.html', {'pctnhs': list_ct_pnh, 'mapnhs': list_mapnh, 'mamhs': list_mamh})
+class CreatePCTNH(View):
+    def get(self, request):
+        mapnh = request.GET.get('mapnh', None)
+        mamh = request.GET.get('mamh', None)
+        slnhap = request.GET.get('slnhap', None)
+        dgnhap = request.GET.get('dgnhap', None)
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT MACT_PNH FROM CT_PNH")
+        mactpnh_all = cursor.fetchall()
+        cursor.close()
+
+        number = []
+        lst = []
+
+        for i in mactpnh_all:
+            lst.append(i[0])
+
+        for i in lst:
+            i = i.replace(" ", '')
+            temp = i[5:]
+            number.append(int(temp))
+
+        max = number[0]
+        for i in number:
+            if i > max:
+                max = i
+
+        max += 1
+        mactpnh = 'CTPNH' + str(max)
+
+        cursor = connection().cursor()
+        cursor.execute("INSERT INTO CT_PNH VALUES(?,?,?,?,?,?)", mactpnh, mapnh, mamh, slnhap, dgnhap, None)
+        cursor.commit()
+        cursor.close()
+
+        mathang = {
+            'ct_pnh': mactpnh,
+        }
+
+        data = {
+            'ct_pnh': mathang
+        }
+
+        return JsonResponse(data)
+class RemovePCTNH(View):
+    def get(self, request):
+        id1 = request.GET.get('id', None)
+
+        cursor = connection().cursor()
+        cursor.execute("DELETE FROM CT_PNH WHERE MACT_PNH = ?", id1)
+        cursor.commit()
+        cursor.close()
+
+        data = {
+            'deleted': True
+        }
+        return JsonResponse(data)
+class UpdatePCTNH(View):
+    def get(self, request):
+        id1 = request.GET.get('id', None)
+        mapnh1 = request.GET.get('mapnh', None)
+        mamh1 = request.GET.get('mamh', None)
+        slnhap1 = request.GET.get('slnhap', None)
+        dgnhap1 = request.GET.get('dgnhap', None)
+
+        cursor = connection().cursor()
+        cursor.execute("UPDATE CT_PNH SET MAPHIEUNHAP=?, MAMATHANG=?, SOLUONGNHAP=?, DONGIANHAP=? WHERE MACT_PNH=?", mapnh1, mamh1, slnhap1, dgnhap1, id1)
+        cursor.commit()
+        cursor.close()
+
+        ct_pnh = {'ct_pnh': id1}
+        data = {
+            'ct_pnh': ct_pnh
+        }
+
+        return JsonResponse(data)
+class FindingPCTNH(View):
+    def get(self, request):
+        info = request.GET.get('info', None)
+        inf = '%' + str(info) + '%'
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT * FROM CT_PNH WHERE MACT_PNH LIKE ? OR MAPHIEUNHAP LIKE ? OR MAMATHANG LIKE ? OR SOLUONGNHAP LIKE ? OR DONGIANHAP LIKE ? OR THANHTIEN LIKE ?", inf, inf, inf, inf, inf, inf)
+        ctpnh_data = cursor.fetchall()
+        cursor.close()
+
+        if(ctpnh_data == []):
+            ctpnh = {
+                'ctpnh': 'empty'
+            }
+            return JsonResponse(ctpnh)
+        
+        data = []
+        for i in ctpnh_data:
+            lst = []
+            lst.append(i[0])
+            lst.append(i[1])
+            lst.append(i[2])
+            lst.append(i[3])
+            lst.append(i[4])
+            lst.append(i[5])
+            data.append(lst)
+        
+        ctpnh = {
+            'ctpnh': data
+        }
+        return JsonResponse(ctpnh)
+# manipulate PCTXH's data
+def PCTXHView(request):
+    list_mapxh = Phieuxuathang.objects.all()
+    list_mamh = Mathang.objects.all()
+    list_ct_pxh = CtPxh.objects.all()
+    return render(request, 'ctpxh.html', {'pctxhs': list_ct_pxh, 'mapxhs': list_mapxh, 'mamhs': list_mamh})
+class CreatePCTXH(View):
+    def get(self, request):
+        mapxh = request.GET.get('mapxh', None)
+        mamh = request.GET.get('mamh', None)
+        slxuat = request.GET.get('slxuat', None)
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT MACT_PXH FROM CT_PXH")
+        mactpxh_all = cursor.fetchall()
+        cursor.close()
+
+        number = []
+        lst = []
+
+        for i in mactpxh_all:
+            lst.append(i[0])
+
+        for i in lst:
+            i = i.replace(" ", '')
+            temp = i[5:]
+            number.append(int(temp))
+
+        max = number[0]
+        for i in number:
+            if i > max:
+                max = i
+
+        max += 1
+        mactpxh = 'CTPXH' + str(max)
+
+        cursor = connection().cursor()
+        cursor.execute("INSERT INTO CT_PXH VALUES(?,?,?,?,?,?)", mactpxh, mapxh, mamh, slxuat, None, None)
+        cursor.commit()
+        cursor.close()
+
+        mathang = {
+            'ct_pxh': mactpxh,
+        }
+
+        data = {
+            'ct_pxh': mathang
+        }
+
+        return JsonResponse(data)
+class RemovePCTXH(View):
+    def get(self, request):
+        id1 = request.GET.get('id', None)
+
+        cursor = connection().cursor()
+        cursor.execute("DELETE FROM CT_PXH WHERE MACT_PXH = ?", id1)
+        cursor.commit()
+        cursor.close()
+
+        data = {
+            'deleted': True
+        }
+        return JsonResponse(data)
+class UpdatePCTXH(View):
+    def get(self, request):
+        id1 = request.GET.get('id', None)
+        mapxh1 = request.GET.get('mapxh', None)
+        mamh1 = request.GET.get('mamh', None)
+        slxuat1 = request.GET.get('slxuat', None)
+
+        cursor = connection().cursor()
+        cursor.execute("UPDATE CT_PXH SET MAPHIEUXUAT=?, MAMATHANG=?, SOLUONGXUAT=? WHERE MACT_PXH=?", mapxh1, mamh1, slxuat1, id1)
+        cursor.commit()
+        cursor.close()
+
+        ct_pxh = {'ct_pxh': id1}
+        data = {
+            'ct_pxh': ct_pxh
+        }
+
+        return JsonResponse(data)
+class FindingPCTXH(View):
+    def get(self, request):
+        info = request.GET.get('info', None)
+        inf = '%' + str(info) + '%'
+
+        cursor = connection().cursor()
+        cursor.execute("SELECT * FROM CT_PXH WHERE MACT_PXH LIKE ? OR MAPHIEUXUAT LIKE ? OR MAMATHANG LIKE ? OR SOLUONGXUAT LIKE ? OR DONGIAXUAT LIKE ? OR THANHTIEN LIKE ?", inf, inf, inf, inf, inf, inf)
+        ctpxh_data = cursor.fetchall()
+        cursor.close()
+
+        if(ctpxh_data == []):
+            ctpxh = {
+                'ctpxh': 'empty'
+            }
+            return JsonResponse(ctpxh)
+        
+        data = []
+        for i in ctpxh_data:
+            lst = []
+            lst.append(i[0])
+            lst.append(i[1])
+            lst.append(i[2])
+            lst.append(i[3])
+            lst.append(i[4])
+            lst.append(i[5])
+            data.append(lst)
+        
+        ctpxh = {
+            'ctpxh': data
+        }
+        return JsonResponse(ctpxh)
