@@ -256,5 +256,65 @@ $('#BCCN_Update').submit(function(){
     $('#BCCNModalUpdate').modal('hide');
     return false;
 });
+$('#finding').keypress(function(event){
+    let findingInfo = $(this).val();
+    if(event.which == 13)
+    {
+        $.ajax({
+            url: "{% url 'bccn_finding' %}",
+            data: {
+                'info': findingInfo
+            },
+            datatype: 'json',
+            success: function(bccn)
+            {
+                if(bccn.bccn == "empty")
+                {
+                    alert("KHÔNG TÌM THẤY!");
+                }
+                else
+                {
+                    $('#bccn_table tr').remove();
+                    appendBCCNTable(bccn);
+                }
+            }
+        });
+        event.preventDefault();
+    }
+})
+function appendBCCNTable(bccn)
+{
+    $('#bccn_table > thead').append(
+    `
+        <tr>    
+            <th>MÃ BCCN</th>
+            <th>THÁNG</th>
+            <th>MÃ ĐL</th>
+            <th>NỢ ĐẦU</th>
+            <th>PHÁT SINH</th>
+            <th>NỢ CUỐI</th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    `
+    );
+    
+    for (let i = 0; i < bccn.bccn.length; i++)
+    {
+        $('#bccn_table > tbody:last-child').append(`
+        <tr>
+            <td>${bccn.bccn[i][0]}</td>
+            <td>${bccn.bccn[i][1]}</td>
+            <td>${bccn.bccn[i][2]}</td>
+            <td>${bccn.bccn[i][3]}</td>
+            <td>${bccn.bccn[i][4]}</td>
+            <td>${bccn.bccn[i][5]}</td>
+            <td> <button class="btn btn-success" data-toggle="modal" data-target="#BCCNModalUpdate" data-whatever="${bccn.bccn[i][0]}">EDIT</button> </td>
+            <td> <button class="btn btn-danger" onclick="deleteBCCN('${bccn.bccn[i][0]}')">DELETE</button> </td>
+        </tr>
+        `);       
+    }
+}
 </script>
 {% endblock %}
