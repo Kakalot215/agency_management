@@ -41,7 +41,7 @@
             <td>{{ instance.tongtien }}</td>
             <td> <button type="button" class="btn btn-success" data-toggle="modal" data-target="#PNHModalUpdate" data-whatever="{{instance.maphieunhap}}">EDIT</button> </td>
             <td> <button type="button" class="btn btn-danger" onclick="deletePNH('{{instance.maphieunhap}}')">DELETE</button> </td>
-            <td> <button type="button" class="btn btn-danger" onclick="window.location.href = '{% url 'pctnh_page' %}'">DETAIL</button> </td>
+            <td> <button type="button" class="btn btn-danger" onclick="CT_PNHView('{{instance.maphieunhap}}')">DETAIL</button> </td>
         </tr>
         {% endfor %}
         {% endif %}
@@ -97,6 +97,28 @@
 
 {% block javascript %}
 <script>
+function CT_PNHView(mapnh)
+{
+    $.ajax({
+        url: "{% url 'pctnh_page' %}",
+        data: {
+            'id': mapnh
+        },
+        datatype: 'json',
+        success: function(data)
+        {
+            if(data.save)
+            {
+                window.location.href = "{% url 'pctnh_page' %}";
+            }
+            else
+            {
+                alert("PHÁT SINH LỖI, VUI LÒNG THỬ LẠI");
+            }
+        }
+    });
+}
+    
 $('#PNH_Create').submit(function(){
     let ngaylp = $('input[name="ngaylpForm"]').val().trim();
     if(ngaylp)
@@ -193,6 +215,7 @@ $('#PNH_Update').submit(function(){
     $('#PNHModalUpdate').modal('hide');
     return false;
 });
+    
 $('#finding').keypress(function(event){
     let findingInfo = $(this).val();
     if(event.which == 13)
@@ -219,6 +242,7 @@ $('#finding').keypress(function(event){
         event.preventDefault();
     }
 })
+    
 function appendPNHTable(pnh)
 {
     $('#pnh_table > thead').append(
