@@ -11,12 +11,12 @@
     </select>
 </form>
 <section class="container2_form_1">
-                    <form>
-                        <label for="finding">TÌM KIẾM</label>
-                        <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">
-                        <button type="button" onclick="#"><i class="fa-solid fa-magnifying-glass"></i></button>
-                    </form>
-                </section>
+    <form>
+        <label for="finding">TÌM KIẾM</label>
+        <input type="text" id="finding" name="finding" placeholder="TÌM KIẾM">
+        <button type="button" onclick="#"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+</section>
 {% endblock %}
 
 {% block content %}
@@ -43,7 +43,7 @@
             <td>{{ instance.tongtien }}</td>
             <td> <button type="button" class="btn btn-success" data-toggle="modal" data-target="#PXHModalUpdate" data-whatever="{{instance.maphieuxuat}}">EDIT</button> </td>
             <td> <button type="button" class="btn btn-danger" onclick="deletePXH('{{instance.maphieuxuat}}')">DELETE</button> </td>
-            <td> <button type="button" class="btn btn-danger" onclick="window.location.href='{% url 'pctxh_page' %}'" >DETAIL</button> </td>
+            <td> <button type="button" class="btn btn-danger" onclick="CT_PXHView('{{instance.maphieuxuat}}')" >DETAIL</button> </td>
         </tr>
         {% endfor %}
         {% endif %}
@@ -115,6 +115,28 @@
 
 {% block javascript %}
 <script>
+function CT_PXHView(mapxh)
+{
+    $.ajax({
+        url: "{% url 'pctxh_page' %}",
+        data: {
+            'id': mapxh
+        },
+        datatype: 'json',
+        success: function(data)
+        {
+            if(data.save)
+            {
+                window.location.href = "{% url 'pctxh_page' %}";
+            }
+            else
+            {
+                alert("PHÁT SINH LỖI, VUI LÒNG THỬ LẠI");
+            }
+        }
+    });
+}
+    
 $('#PXH_Create').submit(function(){
     let madl = document.getElementById('madlForm').value;
     let ngaylp = $('input[name="ngaylpForm"]').val().trim();
@@ -181,10 +203,11 @@ $('#PXHModalUpdate').on('show.bs.modal', function (event) {
 });
 
 $('#PXH_Update').submit(function(){
-    let mapnh = $('input[name="idFormUpdate"]').val().trim();
+    let mapxh = $('input[name="idFormUpdate"]').val().trim();
     let madl = document.getElementById('madlForm').value;
     let ngaylp = $('input[name="ngaylpFormUpdate"]').val().trim();
-    if(mapnh && madl && ngaylp)
+    
+    if(mapxh && madl && ngaylp)
     {
         $.ajax({
             url: "{% url 'pxh_update' %}",
@@ -214,6 +237,7 @@ $('#PXH_Update').submit(function(){
     $('#PXHModalUpdate').modal('hide');
     return false;
 });
+    
 $('#finding').keypress(function(event){
     let findingInfo = $(this).val();
     if(event.which == 13)
