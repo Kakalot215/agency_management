@@ -240,5 +240,64 @@ $('#CT_PXH_Update').submit(function(){
     $('#CT_PXHModalUpdate').modal('hide');
     return false;
 });
+$('#finding').keypress(function(event){
+    let findingInfo = $(this).val();
+    if(event.which == 13)
+    {
+        $.ajax({
+            url: "{% url 'pctxh_finding' %}",
+            data: {
+                'info': findingInfo
+            },
+            datatype: 'json',
+            success: function(ctpxh)
+            {
+                if(ctpxh.ctpxh == "empty")
+                {
+                    alert("KHÔNG TÌM THẤY!");
+                }
+                else
+                {
+                    $('#pctxh_table tr').remove();
+                    appendCTPXHTable(ctpxh);
+                }
+            }
+        });
+        event.preventDefault();
+    }
+})
+function appendCTPXHTable(ctpxh)
+{
+    $('#pctxh_table > thead').append(
+    `
+        <tr>    
+            <th>MÃ CT_PXH</th>
+            <th>MÃ PHIẾU XUẤT</th>
+            <th>MÃ MẶT HÀNG</th>
+            <th>SỐ LƯỢNG XUẤT</th>
+            <th>ĐƠN GIÁ XUẤT</th>
+            <th>THÀNH TIỀN</th>
+            <th></th>
+            <th></th>
+        </tr>
+    `
+    );
+    
+    for (let i = 0; i < ctpxh.ctpxh.length; i++)
+    {
+        $('#pctxh_table > tbody:last-child').append(`
+        <tr>
+            <td>${ctpxh.ctpxh[i][0]}</td>
+            <td>${ctpxh.ctpxh[i][1]}</td>
+            <td>${ctpxh.ctpxh[i][2]}</td>
+            <td>${ctpxh.ctpxh[i][3]}</td>
+            <td>${ctpxh.ctpxh[i][4]}</td>
+            <td>${ctpxh.ctpxh[i][5]}</td>
+            <td> <button type="button" class="btn btn-success" data-toggle="modal" data-target="#CT_PXHModalUpdate" data-whatever="${ctpxh.ctpxh[i][0]}">EDIT</button> </td>
+            <td> <button type="button" class="btn btn-danger" onclick="deleteCT_PXH('${ctpxh.ctpxh[i][0]}')">DELETE</button> </td>
+        </tr>
+        `);       
+    }
+}
 </script>
 {% endblock %}
