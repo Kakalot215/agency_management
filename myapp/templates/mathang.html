@@ -221,5 +221,60 @@ $('#MH_Update').submit(function(){
     $('#MHModalUpdate').modal('hide');
     return false;
 });
+$('#finding').keypress(function(event){
+    let findingInfo = $(this).val();
+    if(event.which == 13)
+    {
+        $.ajax({
+            url: "{% url 'mathang_finding' %}",
+            data: {
+                'info': findingInfo
+            },
+            datatype: 'json',
+            success: function(mh)
+            {
+                if(mh.mh == "empty")
+                {
+                    alert("KHÔNG TÌM THẤY!");
+                }
+                else
+                {
+                    $('#mathang_table tr').remove();
+                    appendMHTable(mh);
+                }
+            }
+        });
+        event.preventDefault();
+    }
+})
+function appendMHTable(mh)
+{
+    $('#mathang_table > thead').append(
+    `
+        <tr>    
+            <th>MÃ MẶT HÀNG</th>
+            <th>TÊN MẶT HÀNG</th>
+            <th>MÃ ĐƠN VỊ TÍNH</th>
+            <th>SỐ LƯỢNG TỒN</th>
+            <th></th>
+            <th></th>
+        </tr>
+    `
+    );
+    
+    for (let i = 0; i < mh.mh.length; i++)
+    {
+        $('#mathang_table > tbody:last-child').append(`
+        <tr>
+            <td>${mh.mh[i][0]}</td>
+            <td>${mh.mh[i][1]}</td>
+            <td>${mh.mh[i][2]}</td>
+            <td>${mh.mh[i][3]}</td>
+            <td> <button class="btn btn-success" data-toggle="modal" data-target="#MHModalUpdate" data-whatever="${mh.mh[i][0]}">EDIT</button> </td>
+            <td> <button class="btn btn-danger" onclick="deleteMH('${mh.mh[i][0]}')">DELETE</button> </td>
+        </tr>
+        `);       
+    }
+}
 </script>
 {% endblock %}
