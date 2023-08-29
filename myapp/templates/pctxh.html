@@ -2,16 +2,6 @@
 {% load static %}
 
 {% block category %}
-<!--<form action="">-->
-<!--    <label for="bills">CHỌN DANH SÁCH</label>-->
-<!--    <select id="bills" name="bills_category" data-live-search="true" onchange="location = this.value">-->
-<!--        <option value="{% url 'pctxh_page' %}">PHIẾU CHI TIẾT XUẤT HÀNG</option>-->
-<!--        <option value="{% url 'pxh_page' %}">PHIẾU XUẤT HÀNG</option>-->
-<!--        <option value="{% url 'pnh_page' %}">PHIẾU NHẬP HÀNG</option>-->
-<!--        <option value="{% url 'pctnh_page' %}">PHIẾU CHI TIẾT NHẬP HÀNG</option>-->
-<!--        <option value="{% url 'ptt_page' %}">PHIẾU THU TIỀN</option>-->
-<!--    </select>-->
-<!--</form>-->
 <section class="container2_form_1">
     <form>
         <label for="finding">TÌM KIẾM</label>
@@ -23,6 +13,7 @@
 
 {% block content %}
 <button data-toggle="modal" data-target="#CT_PXHModal" style="margin: 10px">THÊM CT_PXH</button>
+<button type="button" style="margin: 10px" onclick="window.location.href = '{% url 'pxh_page' %}'">BACK</button>
 <table id="pctxh_table">
     <thead>
         <tr>
@@ -64,14 +55,6 @@
             </div>
             <form id="CT_PXH_Create" action="" method="get">
                 <div class="modal-body">
-                    <label for="mapxhForm">MÃ PHIẾU XUẤT</label> <br>
-                    <select id="mapxhForm">
-                        {% if mapxhs %}
-                        {% for option in mapxhs %}
-                        <option val="{{option.maphieuxuat}}">{{option.maphieuxuat}}</option>
-                        {% endfor %}
-                        {% endif %}
-                    </select> <br>
                     <label for="mamhForm">MÃ MẶT HÀNG</label> <br>
                     <select id="mamhForm">
                         {% if mamhs %}
@@ -136,7 +119,6 @@
 {% block javascript %}
 <script>
 $('#CT_PXH_Create').submit(function(){
-    let mapxh = $('input[name="mapxhForm"]').val().trim();
     let mamh = $('input[name="mamhForm"]').val().trim();
     let slxuat = $('input[name="slxuatForm"]').val().trim();
 
@@ -145,7 +127,6 @@ $('#CT_PXH_Create').submit(function(){
         $.ajax({
             url: "{% url 'pctxh_create' %}",
             data: {
-                'mapxh': mapxh,
                 'mamh': mamh,
                 'slxuat': slxuat,
             },
@@ -240,6 +221,7 @@ $('#CT_PXH_Update').submit(function(){
     $('#CT_PXHModalUpdate').modal('hide');
     return false;
 });
+    
 $('#finding').keypress(function(event){
     let findingInfo = $(this).val();
     if(event.which == 13)
@@ -266,6 +248,7 @@ $('#finding').keypress(function(event){
         event.preventDefault();
     }
 })
+    
 function appendCTPXHTable(ctpxh)
 {
     $('#pctxh_table > thead').append(
