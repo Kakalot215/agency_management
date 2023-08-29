@@ -2,16 +2,6 @@
 {% load static %}
 
 {% block category %}
-<!--<form action="">-->
-<!--    <label for="bills">CHỌN DANH SÁCH</label>-->
-<!--    <select id="bills" name="bills_category" data-live-search="true" onchange="location = this.value">-->
-<!--        <option value="{% url 'pctnh_page' %}">PHIẾU CHI TIẾT NHẬP HÀNG</option>-->
-<!--        <option value="{% url 'pxh_page' %}">PHIẾU XUẤT HÀNG</option>-->
-<!--        <option value="{% url 'pnh_page' %}">PHIẾU NHẬP HÀNG</option>-->
-<!--        <option value="{% url 'pctxh_page' %}">PHIẾU CHI TIẾT XUẤT HÀNG</option>-->
-<!--        <option value="{% url 'ptt_page' %}">PHIẾU THU TIỀN</option>-->
-<!--    </select>-->
-<!--</form>-->
 <section class="container2_form_1">
     <form>
         <label for="finding">TÌM KIẾM</label>
@@ -23,6 +13,7 @@
 
 {% block content %}
 <button data-toggle="modal" data-target="#CT_PNHModal" style="margin: 10px">THÊM CT_PNH</button>
+<button type="button" style="margin: 10px" onclick="window.location.href = '{% url 'pnh_page' %}'">BACK</button>
 <table id="pctnh_table">
     <thead>
         <tr>
@@ -64,14 +55,6 @@
             </div>
             <form id="CT_PNH_Create" action="" method="get">
                 <div class="modal-body">
-                    <label for="mapnhForm">MÃ PHIẾU NHẬP</label> <br>
-                    <select id="mapnhForm">
-                        {% if mapnhs %}
-                        {% for option in mapnhs %}
-                        <option val="{{option.maphieunhap}}">{{option.maphieunhap}}</option>
-                        {% endfor %}
-                        {% endif %}
-                    </select> <br>
                     <label for="mamhForm">MÃ MẶT HÀNG</label> <br>
                     <select id="mamhForm">
                         {% if mamhs %}
@@ -140,7 +123,6 @@
 {% block javascript %}
 <script>
 $('#CT_PNH_Create').submit(function(){
-    let mapnh = $('input[name="mapnhForm"]').val().trim();
     let mamh = $('input[name="mamhForm"]').val().trim();
     let slnhap = $('input[name="slnhapForm"]').val().trim();
     let dgnhap = $('input[name="dgnhapForm"]').val().trim();
@@ -150,7 +132,6 @@ $('#CT_PNH_Create').submit(function(){
         $.ajax({
             url: "{% url 'pctnh_create' %}",
             data: {
-                'mapnh': mapnh,
                 'mamh': mamh,
                 'slnhap': slnhap,
                 'dgnhap': dgnhap,
@@ -248,6 +229,7 @@ $('#CT_PNH_Update').submit(function(){
     $('#CT_PNHModalUpdate').modal('hide');
     return false;
 });
+    
 $('#finding').keypress(function(event){
     let findingInfo = $(this).val();
     if(event.which == 13)
@@ -274,6 +256,7 @@ $('#finding').keypress(function(event){
         event.preventDefault();
     }
 })
+    
 function appendCTPNHTable(ctpnh)
 {
     $('#pctnh_table > thead').append(
