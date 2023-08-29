@@ -282,5 +282,68 @@ $('#DL_Update').submit(function(){
     $('#DLModalUpdate').modal('hide');
     return false;
 });
+$('#finding').keypress(function(event){
+    let findingInfo = $(this).val();
+    if(event.which == 13)
+    {
+        $.ajax({
+            url: "{% url 'daily_finding' %}",
+            data: {
+                'info': findingInfo
+            },
+            datatype: 'json',
+            success: function(dl)
+            {
+                if(dl.dl == "empty")
+                {
+                    alert("KHÔNG TÌM THẤY!");
+                }
+                else
+                {
+                    $('#daily_table tr').remove();
+                    appendDLTable(dl);
+                }
+            }
+        });
+        event.preventDefault();
+    }
+})
+function appendDLTable(dl)
+{
+    $('#daily_table > thead').append(
+    `
+        <tr>    
+            <th>MÃ ĐẠI LÝ</th>
+            <th>TÊN ĐẠI LÝ</th>
+            <th>MÃ LOẠI ĐẠI LÝ</th>
+            <th>SỐ ĐIỆN THOẠI</th>
+            <th>ĐỊA CHỈ</th>
+            <th>MÃ QUẬN</th>
+            <th>NGÀY TIẾP NHẬN</th>
+            <th>SỐ TIỀN NỢ</th>
+            <th></th>
+            <th></th>
+        </tr>
+    `
+    );
+    
+    for (let i = 0; i < dl.dl.length; i++)
+    {
+        $('#daily_table > tbody:last-child').append(`
+        <tr>
+            <td>${dl.dl[i][0]}</td>
+            <td>${dl.dl[i][1]}</td>
+            <td>${dl.dl[i][2]}</td>
+            <td>${dl.dl[i][3]}</td>
+            <td>${dl.dl[i][4]}</td>
+            <td>${dl.dl[i][5]}</td>
+            <td>${dl.dl[i][6]}</td>
+            <td>${dl.dl[i][7]}</td>
+            <td> <button class="btn btn-success" data-toggle="modal" data-target="#DLModalUpdate" data-whatever="${dl.dl[i][0]}">EDIT</button> </td>
+            <td> <button class="btn btn-danger" onclick="deleteDL('${dl.dl[i][0]}')">DELETE</button> </td>
+        </tr>
+        `);       
+    }
+}
 </script>
 {% endblock %}
