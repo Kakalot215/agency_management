@@ -218,5 +218,56 @@ function editQuan(id)
         $('#nameFormUpdate').val("");
     }
 }
+$('#finding').keypress(function(event){
+    let findingInfo = $(this).val();
+    if(event.which == 13)
+    {
+        $.ajax({
+            url: "{% url 'quan_finding' %}",
+            data: {
+                'info': findingInfo
+            },
+            datatype: 'json',
+            success: function(data_quan)
+            {
+                if(data_quan.data_quan == "empty")
+                {
+                    alert("KHÔNG TÌM THẤY!");
+                }
+                else
+                {
+                    $('#quan_table tr').remove();
+                    appendQuanTable(data_quan);
+                }
+            }
+        });
+        event.preventDefault();
+    }
+})
+function appendQuanTable(quan)
+{
+    $('#quan_table > thead').append(
+    `
+        <tr>    
+            <th>MÃ QUẬN</th>
+            <th>TÊN QUẬN</th>
+            <th></th>
+            <th></th>
+        </tr>
+    `
+    );
+    
+    for (let i = 0; i < quan.data_quan.length; i++)
+    {
+        $('#quan_table > tbody:last-child').append(`
+        <tr id="Q-${quan.data_quan[i][0]}">
+            <td class="quanData maquanData" name="maquan">${quan.data_quan[i][0]}</td>
+            <td class="quanData" id="tenquanData" name="tenquan">${quan.data_quan[i][1]}</td>
+            <td> <button class="btn btn-success" onclick="editQuan('${quan.data_quan[i][0]}')" data-toggle="modal" data-target="#QuanModalUpdate" data-whatever="${quan.data_quan[i][0]}">EDIT</button> </td>
+            <td> <button class="btn btn-danger" onclick="deleteQuan('${quan.data_quan[i][0]}')">DELETE</button> </td>
+        </tr>
+        `);       
+    }
+}
 </script>
 {% endblock %}
