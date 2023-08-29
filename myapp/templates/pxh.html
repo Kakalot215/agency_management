@@ -214,5 +214,60 @@ $('#PXH_Update').submit(function(){
     $('#PXHModalUpdate').modal('hide');
     return false;
 });
+$('#finding').keypress(function(event){
+    let findingInfo = $(this).val();
+    if(event.which == 13)
+    {
+        $.ajax({
+            url: "{% url 'pxh_finding' %}",
+            data: {
+                'info': findingInfo
+            },
+            datatype: 'json',
+            success: function(pxh)
+            {
+                if(pxh.pxh == "empty")
+                {
+                    alert("KHÔNG TÌM THẤY!");
+                }
+                else
+                {
+                    $('#pxh_table tr').remove();
+                    appendPXHTable(pxh);
+                }
+            }
+        });
+        event.preventDefault();
+    }
+})
+function appendPXHTable(pxh)
+{
+    $('#pxh_table > thead').append(
+    `
+        <tr>    
+            <th>MÃ PHIẾU XUẤT</th>
+            <th>MÃ ĐẠI LÝ</th>
+            <th>NGÀY LẬP PHIẾU</th>
+            <th>TỔNG TIỀN</th>
+            <th></th>
+            <th></th>
+        </tr>
+    `
+    );
+    
+    for (let i = 0; i < pxh.pxh.length; i++)
+    {
+        $('#pxh_table > tbody:last-child').append(`
+        <tr>
+            <td>${pxh.pxh[i][0]}</td>
+            <td>${pxh.pxh[i][1]}</td>
+            <td>${pxh.pxh[i][2]}</td>
+            <td>${pxh.pxh[i][3]}</td>
+            <td> <button type="button" class="btn btn-success" data-toggle="modal" data-target="#PXHModalUpdate" data-whatever="${pxh.pxh[i][0]}">EDIT</button> </td>
+            <td> <button type="button" class="btn btn-danger" onclick="deletePXH('${pxh.pxh[i][0]}')">DELETE</button> </td>
+        </tr>
+        `);       
+    }
+}
 </script>
 {% endblock %}
