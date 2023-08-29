@@ -193,5 +193,58 @@ $('#PNH_Update').submit(function(){
     $('#PNHModalUpdate').modal('hide');
     return false;
 });
+$('#finding').keypress(function(event){
+    let findingInfo = $(this).val();
+    if(event.which == 13)
+    {
+        $.ajax({
+            url: "{% url 'pnh_finding' %}",
+            data: {
+                'info': findingInfo
+            },
+            datatype: 'json',
+            success: function(pnh)
+            {
+                if(pnh.pnh == "empty")
+                {
+                    alert("KHÔNG TÌM THẤY!");
+                }
+                else
+                {
+                    $('#pnh_table tr').remove();
+                    appendPNHTable(pnh);
+                }
+            }
+        });
+        event.preventDefault();
+    }
+})
+function appendPNHTable(pnh)
+{
+    $('#pnh_table > thead').append(
+    `
+        <tr>    
+            <th>MÃ PHIẾU NHẬP</th>
+            <th>NGÀY LẬP PHIẾU</th>
+            <th>TỔNG TIỀN</th>
+            <th></th>
+            <th></th>
+        </tr>
+    `
+    );
+    
+    for (let i = 0; i < pnh.pnh.length; i++)
+    {
+        $('#pnh_table > tbody:last-child').append(`
+        <tr>
+            <td>${pnh.pnh[i][0]}</td>
+            <td>${pnh.pnh[i][1]}</td>
+            <td>${pnh.pnh[i][2]}</td>
+            <td> <button type="button" class="btn btn-success" data-toggle="modal" data-target="#PNHModalUpdate" data-whatever="${pnh.pnh[i][0]}">EDIT</button> </td>
+            <td> <button type="button" class="btn btn-danger" onclick="deletePNH('${pnh.pnh[i][0]}')">DELETE</button> </td>
+        </tr>
+        `);       
+    }
+}
 </script>
 {% endblock %}
