@@ -1564,7 +1564,7 @@ def PCTNHView(request):
         CTNH_pk = val
         return JsonResponse({'save': True})
 
-    return render(request, 'QLCDL/pctnh.html', {'pctnhs': list_ct_pnh, 'mapnhs': list_mapnh, 'mamhs': list_mamh})
+    return render(request, 'pctnh.html', {'pctnhs': list_ct_pnh, 'mapnhs': list_mapnh, 'mamhs': list_mamh})
     
 class CreatePCTNH(View):
     def get(self, request):
@@ -1695,7 +1695,7 @@ def PCTXHView(request):
         CTXH_pk = val
         return JsonResponse({'save': True})
 
-    return render(request, 'QLCDL/pctxh.html', {'pctxhs': list_ct_pxh, 'mapxhs': list_mapxh, 'mamhs': list_mamh})
+    return render(request, 'pctxh.html', {'pctxhs': list_ct_pxh, 'mapxhs': list_mapxh, 'mamhs': list_mamh})
     
 class CreatePCTXH(View):
     def get(self, request):
