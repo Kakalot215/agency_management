@@ -150,6 +150,7 @@ $('#PTT_Create').submit(function(){
     $('#PTTModal').modal('hide');
     return false;
 });
+    
 function deletePTT(id)
 {
     $.ajax({
@@ -167,6 +168,7 @@ function deletePTT(id)
         }
     });
 }
+    
 // LOAD DATA TO MODAL BEFORE UPDATING
 $('#PTTModalUpdate').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget); // Button that triggered the modal - when model appear.
@@ -176,6 +178,7 @@ $('#PTTModalUpdate').on('show.bs.modal', function (event) {
   var modal = $(this);
   modal.find('.modal-body #idFormUpdate').val(recipient);
 });
+    
 $('#PTT_Update').submit(function(){
     let maptt = $('input[name="idFormUpdate"]').val().trim();
     let madl = document.getElementById('madlFormUpdate').value;
@@ -213,6 +216,7 @@ $('#PTT_Update').submit(function(){
     $('#PTTModalUpdate').modal('hide');
     return false;
 });
+    
 $('#finding').keypress(function(event){
     let findingInfo = $(this).val();
     if(event.which == 13)
@@ -239,6 +243,7 @@ $('#finding').keypress(function(event){
         event.preventDefault();
     }
 })
+    
 function appendPTTTable(ptt)
 {
     $('#ptt_table > thead').append(
