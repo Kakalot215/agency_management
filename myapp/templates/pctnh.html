@@ -248,5 +248,64 @@ $('#CT_PNH_Update').submit(function(){
     $('#CT_PNHModalUpdate').modal('hide');
     return false;
 });
+$('#finding').keypress(function(event){
+    let findingInfo = $(this).val();
+    if(event.which == 13)
+    {
+        $.ajax({
+            url: "{% url 'pctnh_finding' %}",
+            data: {
+                'info': findingInfo
+            },
+            datatype: 'json',
+            success: function(ctpnh)
+            {
+                if(ctpnh.ctpnh == "empty")
+                {
+                    alert("KHÔNG TÌM THẤY!");
+                }
+                else
+                {
+                    $('#pctnh_table tr').remove();
+                    appendCTPNHTable(ctpnh);
+                }
+            }
+        });
+        event.preventDefault();
+    }
+})
+function appendCTPNHTable(ctpnh)
+{
+    $('#pctnh_table > thead').append(
+    `
+        <tr>    
+            <th>MÃ CT_PNH</th>
+            <th>MÃ PHIẾU NHẬP</th>
+            <th>MÃ MẶT HÀNG</th>
+            <th>SỐ LƯỢNG NHẬP</th>
+            <th>ĐƠN GIÁ NHẬP</th>
+            <th>THÀNH TIỀN</th>
+            <th></th>
+            <th></th>
+        </tr>
+    `
+    );
+    
+    for (let i = 0; i < ctpnh.ctpnh.length; i++)
+    {
+        $('#pctnh_table > tbody:last-child').append(`
+        <tr>
+            <td>${ctpnh.ctpnh[i][0]}</td>
+            <td>${ctpnh.ctpnh[i][1]}</td>
+            <td>${ctpnh.ctpnh[i][2]}</td>
+            <td>${ctpnh.ctpnh[i][3]}</td>
+            <td>${ctpnh.ctpnh[i][4]}</td>
+            <td>${ctpnh.ctpnh[i][5]}</td>
+            <td> <button type="button" class="btn btn-success" data-toggle="modal" data-target="#CT_PNHModalUpdate" data-whatever="${ctpnh.ctpnh[i][0]}">EDIT</button> </td>
+            <td> <button type="button" class="btn btn-danger" onclick="deleteCT_PNH('${ctpnh.ctpnh[i][0]}')">DELETE</button> </td>
+        </tr>
+        `);       
+    }
+}
 </script>
 {% endblock %}
