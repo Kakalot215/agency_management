@@ -187,5 +187,56 @@ $('#DVT_Update').submit(function(){
     $('#DVTModalUpdate').modal('hide');
     return false;
 });
+$('#finding').keypress(function(event){
+    let findingInfo = $(this).val();
+    if(event.which == 13)
+    {
+        $.ajax({
+            url: "{% url 'dvt_finding' %}",
+            data: {
+                'info': findingInfo
+            },
+            datatype: 'json',
+            success: function(dvt)
+            {
+                if(dvt.dvt == "empty")
+                {
+                    alert("KHÔNG TÌM THẤY!");
+                }
+                else
+                {
+                    $('#dvt_table tr').remove();
+                    appendDVTTable(dvt);
+                }
+            }
+        });
+        event.preventDefault();
+    }
+})
+function appendDVTTable(dvt)
+{
+    $('#dvt_table > thead').append(
+    `
+        <tr>    
+            <th>MÃ ĐƠN VỊ TÍNH</th>
+            <th>TÊN ĐƠN VỊ TÍNH</th>
+            <th></th>
+            <th></th>
+        </tr>
+    `
+    );
+    
+    for (let i = 0; i < dvt.dvt.length; i++)
+    {
+        $('#dvt_table > tbody:last-child').append(`
+        <tr>
+            <td>${dvt.dvt[i][0]}</td>
+            <td>${dvt.dvt[i][1]}</td>
+            <td> <button class="btn btn-success" data-toggle="modal" data-target="#DVTModalUpdate" data-whatever="${dvt.dvt[i][0]}">EDIT</button></td>
+            <td> <button class="btn btn-danger" onclick="deleteDVT('${dvt.dvt[i][0]}')">DELETE</button></td>
+        </tr>
+        `);       
+    }
+}
 </script>
 {% endblock %}
