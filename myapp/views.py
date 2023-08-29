@@ -1,40 +1,16 @@
-from django.shortcuts import render
-from django.shortcuts import redirect
-from django.http import JsonResponse
-from django.http import HttpResponse
-
-from .models import Taikhoan
-
-# Import models for manipulate with lists
-from .models import Daily
-from .models import Loaidaily
-from .models import Quan
-from .models import Dvt
-from .models import Mathang
-
-# Import models for manipulate with bills
-from .models import CtPxh
-from .models import CtPnh
-from .models import Phieunhaphang
-from .models import Phieuthutien
-from .models import Phieuxuathang
-
-# Import models for manipulate with reports
-from .models import Baocaocongno
-from .models import Baocaodoanhso
-
-# Import models for manipulate with regulations
-from .models import Thamso
-
+from django.shortcuts import render, redirect
 from django.contrib import messages
-import pyodbc
 from django.views.generic import View, ListView
+from django.http import JsonResponse
+from .models import *
+import pyodbc
 
 # Create your views here.
 def connection():
     connect_key = "Driver={ODBC Driver 17 for SQL Server}; Server=localhost; Database=QLCDL; Trusted_Connection=yes;"
     conn = pyodbc.connect(connect_key)
     return conn
+    
 # manipulate Daily's data
 def webpage1(request):
     # Function used for loging in
@@ -54,6 +30,7 @@ def webpage1(request):
         messages.error(request, "LogIn failed!")
 
     return render(request, "login.html", {})
+    
 # manipulate Daily's data
 def webpage2(request):
     # Registering a new account
@@ -81,12 +58,14 @@ def webpage2(request):
         messages.success(request, "Register successfully!")
 
     return render(request, "register.html", {})
+    
 # manipulate Daily's data
 def DailyView(request):
     list_dl = Daily.objects.all()
     list_quan = Quan.objects.all()
     list_ldl = Loaidaily.objects.all()
     return render(request, 'daily.html', {'dailys': list_dl, 'quans': list_quan, 'ldls': list_ldl})
+    
 class CreateDaily(View):
     def get(self, request):
         tendl1 = request.GET.get('tendl', None) 
@@ -156,6 +135,7 @@ class CreateDaily(View):
         }
 
         return JsonResponse(data)
+        
 class RemoveDaily(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -221,6 +201,7 @@ class RemoveDaily(View):
             'deleted': True
         }
         return JsonResponse(data)
+        
 class UpdateDaily(View):
     def get(self, request):
         id = request.GET.get('id', None)
@@ -268,6 +249,7 @@ class UpdateDaily(View):
         }
 
         return JsonResponse(data)
+        
 class FindingDaily(View):
     def get(self, request):
         info = request.GET.get('info', None)
@@ -301,11 +283,13 @@ class FindingDaily(View):
             'dl': data
         }
         return JsonResponse(dl)
+        
 # manipulate LOAIDAILY's data
 class LoaidailyView(ListView):
     model = Loaidaily
     template_name = 'loaidaily.html'
     context_object_name = 'loaidailys'
+    
 class CreateLoaidaily(View):
     def get(self, request):
         tenldl = request.GET.get('name', None)
@@ -364,6 +348,7 @@ class CreateLoaidaily(View):
         }
 
         return JsonResponse(data)
+        
 class RemoveLoaidaily(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -389,6 +374,7 @@ class RemoveLoaidaily(View):
             'deleted': True
         }
         return JsonResponse(data)
+        
 class UpdateLoaidaily(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -420,6 +406,7 @@ class UpdateLoaidaily(View):
             'ldl': ldl
         }
         return JsonResponse(data)
+        
 class FindingLoaidaily(View):
     def get(self, request):
         info = request.GET.get('info', None)
@@ -448,11 +435,13 @@ class FindingLoaidaily(View):
             'ldl': data
         }
         return JsonResponse(ldl)
+        
 # manipulate QUAN's data
 class QuanView(ListView):
     model = Quan
     template_name = 'quan.html'
     context_object_name = 'quans'
+    
 class CreateQuan(View):
     def get(self, request):
         tenquan_new = request.GET.get('tenquan', None)
@@ -502,6 +491,7 @@ class CreateQuan(View):
             'quan': quan_new
         }
         return JsonResponse(data)
+        
 class RemoveQuan(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -527,6 +517,7 @@ class RemoveQuan(View):
             'deleted': True
         }
         return JsonResponse(data)
+        
 class UpdateQuan(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -554,6 +545,7 @@ class UpdateQuan(View):
         }
 
         return JsonResponse(data)
+        
 class FindQuan(View):
     def get(self, request):
         info = request.GET.get('info', None)
@@ -581,11 +573,13 @@ class FindQuan(View):
             'data_quan': data
         }
         return JsonResponse(data_quan)
+        
 # manipulate Mathang's data
 class MathangView(ListView):
     model = Mathang
     template_name = 'mathang.html'
     context_object_name = 'mathangs'
+    
 class CreateMathang(View):
     def get(self, request):
         name1 = request.GET.get('name', None)
@@ -644,6 +638,7 @@ class CreateMathang(View):
         }
 
         return JsonResponse(data)
+        
 class RemoveMathang(View):
     def get(self, request):
         mamh = request.GET.get('id' , None)
@@ -681,6 +676,7 @@ class RemoveMathang(View):
         }
 
         return JsonResponse(data)
+        
 class UpdateMathang(View):
     def get(self, request):
         id = request.GET.get('id', None)
@@ -714,6 +710,7 @@ class UpdateMathang(View):
             'mathang': mathang
         }
         return JsonResponse(data)
+        
 class FindingMathang(View):
     def get(self, request):
         info = request.GET.get('info', None)
@@ -743,11 +740,13 @@ class FindingMathang(View):
             'mh': data
         }
         return JsonResponse(mh)
+        
 # manipulate DVT's data
 class DVTView(ListView):
     model = Dvt
     template_name = 'dvt.html'
     context_object_name = 'dvts'
+    
 class CreateDVT(View):
     def get(self, request):
         name1 = request.GET.get('name', None)
@@ -807,6 +806,7 @@ class CreateDVT(View):
         }
 
         return JsonResponse(data)
+        
 class RemoveDVT(View):
     def get(self, request):
         id = request.GET.get('id', None)
@@ -833,6 +833,7 @@ class RemoveDVT(View):
         }
 
         return JsonResponse(data)
+        
 class UpdateDVT(View):
     def get(self, request):
         id = request.GET.get('id', None)
@@ -862,6 +863,7 @@ class UpdateDVT(View):
             'dvt': dvt
         }
         return JsonResponse(data)
+        
 class FindDVT(View):
     def get(self, request):
         info = request.GET.get('info', None)
@@ -889,27 +891,16 @@ class FindDVT(View):
             'dvt': data
         }
         return JsonResponse(dvt)
+        
 # manipulate PNH's data
 class PNHView(ListView):
     model = Phieunhaphang
     template_name = 'pnh.html'
     context_object_name = 'pnhs'
+    
 class CreatePNH(View):
     def get(self, request):
         ngaylp = request.GET.get('date', None)
-        # sono = request.GET.get('debt', None)
-
-        # cursor = connection().cursor()
-        # cursor.execute("SELECT TENLOAIDAILY FROM LOAIDAILY")
-        # ngaylp_all = cursor.fetchall()
-        # cursor.close()
-        #
-        # for i in ngaylp_all:
-        #     if i[0] == ngaylp:
-        #         data = {
-        #             'data': ''
-        #         }
-        #         return JsonResponse(data)
 
         cursor = connection().cursor()
         cursor.execute("SELECT MAPHIEUNHAP FROM PHIEUNHAPHANG")
@@ -949,6 +940,7 @@ class CreatePNH(View):
         }
 
         return JsonResponse(data)
+        
 class RemovePNH(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -974,6 +966,7 @@ class RemovePNH(View):
             'deleted': True
         }
         return JsonResponse(data)
+        
 class UpdatePNH(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -990,6 +983,7 @@ class UpdatePNH(View):
         }
 
         return JsonResponse(data)
+        
 class FindingPNH(View):
     def get(self, request):
         info = request.GET.get('info', None)
@@ -1018,28 +1012,17 @@ class FindingPNH(View):
             'pnh': data
         }
         return JsonResponse(pnh)
+        
 # manipulate PXH's data
 def PXHView(request):
     list_daily = Daily.objects.all()
     list_pxh = Phieuxuathang.objects.all()
     return render(request, 'pxh.html', {'pxhs': list_pxh, 'dailys': list_daily})
+    
 class CreatePXH(View):
     def get(self, request):
         dl_id1 = request.GET.get('madl', None)
         ngaylp = request.GET.get('date', None)
-        # sono = request.GET.get('debt', None)
-
-        # cursor = connection().cursor()
-        # cursor.execute("SELECT TENLOAIDAILY FROM LOAIDAILY")
-        # ngaylp_all = cursor.fetchall()
-        # cursor.close()
-        #
-        # for i in ngaylp_all:
-        #     if i[0] == ngaylp:
-        #         data = {
-        #             'data': ''
-        #         }
-        #         return JsonResponse(data)
 
         cursor = connection().cursor()
         cursor.execute("SELECT MAPHIEUXUAT FROM PHIEUXUATHANG")
@@ -1079,6 +1062,7 @@ class CreatePXH(View):
         }
 
         return JsonResponse(data)
+        
 class RemovePXH(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -1104,6 +1088,7 @@ class RemovePXH(View):
             'deleted': True
         }
         return JsonResponse(data)
+        
 class UpdatePXH(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -1121,6 +1106,7 @@ class UpdatePXH(View):
         }
 
         return JsonResponse(data)
+        
 class FindingPXH(View):
     def get(self, request):
         info = request.GET.get('info', None)
@@ -1150,11 +1136,13 @@ class FindingPXH(View):
             'pxh': data
         }
         return JsonResponse(pxh)
+        
 # manipulate PTT's data
 def PTTView(request):
     list_daily = Daily.objects.all()
     list_ptt = Phieuthutien.objects.all()
     return render(request, 'ptt.html', {'ptts': list_ptt, 'dailys': list_daily})
+    
 class CreatePTT(View):
     def get(self, request):
         dl_id1 = request.GET.get('madl', None)
@@ -1197,6 +1185,7 @@ class CreatePTT(View):
             'ptt': mathang
         }
         return JsonResponse(data)
+        
 class RemovePTT(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -1210,6 +1199,7 @@ class RemovePTT(View):
             'deleted': True
         }
         return JsonResponse(data)
+        
 class UpdatePTT(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -1228,6 +1218,7 @@ class UpdatePTT(View):
         }
 
         return JsonResponse(data)
+        
 class FindingPTT(View):
     def get(self, request):
         info = request.GET.get('info', None)
@@ -1257,11 +1248,13 @@ class FindingPTT(View):
             'ptt': data
         }
         return JsonResponse(ptt)
+        
 # manipulate BCCN's data
 def BCCNView(request):
     list_daily = Daily.objects.all() 
     list_bccn = Baocaocongno.objects.all()
     return render(request, 'bccn.html', {'bccns': list_bccn, 'dailys': list_daily})
+    
 class CreateBCCN(View):
     def get(self, request):
         month = request.GET.get('thang', None)
@@ -1317,6 +1310,7 @@ class CreateBCCN(View):
             'mabccn': mathang
         }
         return JsonResponse(data)
+        
 class RemoveBCCN(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -1330,6 +1324,7 @@ class RemoveBCCN(View):
             'deleted': True
         }
         return JsonResponse(data)
+        
 class UpdateBCCN(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -1359,6 +1354,7 @@ class UpdateBCCN(View):
         }
 
         return JsonResponse(data)
+        
 class FindingBCCN(View):
     def get(self, request):
         info = request.GET.get('info', None)
@@ -1390,11 +1386,13 @@ class FindingBCCN(View):
             'bccn': data
         }
         return JsonResponse(bccn)
+        
 # manipulate BCDS's data
 def BCDSView(request):
     list_bcds = Baocaodoanhso.objects.all()
     list_daily = Daily.objects.all()
     return render(request, 'bcds.html', {'bcdss': list_bcds, 'dailys': list_daily})
+    
 class CreateBCDS(View):
     def get(self, request):
         month = request.GET.get('thang', None)
@@ -1451,6 +1449,7 @@ class CreateBCDS(View):
             'bcds': bcds
         }
         return JsonResponse(data)
+        
 class RemoveBCDS(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -1463,6 +1462,7 @@ class RemoveBCDS(View):
             'deleted': True
         }
         return JsonResponse(data)
+        
 class UpdateBCDS(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -1472,7 +1472,6 @@ class UpdateBCDS(View):
         cursor.execute("SELECT MADAILY FROM BAOCAODOANHSO WHERE THANG=?", month1)
         madl_thang_all = cursor.fetchall()
         cursor.close()
-
 
         for i in madl_thang_all:
             itemp = i[0]
@@ -1494,6 +1493,7 @@ class UpdateBCDS(View):
         }
 
         return JsonResponse(data)
+        
 class FindingBCDS(View):
     def get(self, request):
         info = request.GET.get('info', None)
@@ -1525,11 +1525,13 @@ class FindingBCDS(View):
             'bcds': data
         }
         return JsonResponse(bcds)
+        
 # manipulate REG's data
 class REGView(ListView):
     model = Thamso
     template_name = 'regulations.html'
     context_object_name = 'regs'
+    
 class UpdateREG(View):
     def get(self, request):
         
@@ -1545,16 +1547,29 @@ class UpdateREG(View):
             'updated': dltoida
         }
         return JsonResponse(data)
+        
 # manipulate PCTNH's data
+CTNH_pk = None
+
 def PCTNHView(request):
+    global CTNH_pk
+    val = request.GET.get('id', None)
     list_mapnh = Phieunhaphang.objects.all()
     list_mamh = Mathang.objects.all()
-    list_ct_pnh = CtPnh.objects.all()
+
+    if val == None:
+        val = CTNH_pk
+        list_ct_pnh = CtPnh.objects.filter(maphieunhap=val)
+    else:
+        CTNH_pk = val
+        return JsonResponse({'save': True})
+
+    return render(request, 'QLCDL/pctnh.html', {'pctnhs': list_ct_pnh, 'mapnhs': list_mapnh, 'mamhs': list_mamh})
     
-    return render(request, 'ctpnh.html', {'pctnhs': list_ct_pnh, 'mapnhs': list_mapnh, 'mamhs': list_mamh})
 class CreatePCTNH(View):
     def get(self, request):
-        mapnh = request.GET.get('mapnh', None)
+        global CTNH_pk
+        mapnh = CTNH_pk
         mamh = request.GET.get('mamh', None)
         slnhap = request.GET.get('slnhap', None)
         dgnhap = request.GET.get('dgnhap', None)
@@ -1597,6 +1612,7 @@ class CreatePCTNH(View):
         }
 
         return JsonResponse(data)
+        
 class RemovePCTNH(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -1610,6 +1626,7 @@ class RemovePCTNH(View):
             'deleted': True
         }
         return JsonResponse(data)
+        
 class UpdatePCTNH(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -1629,6 +1646,7 @@ class UpdatePCTNH(View):
         }
 
         return JsonResponse(data)
+        
 class FindingPCTNH(View):
     def get(self, request):
         info = request.GET.get('info', None)
@@ -1660,15 +1678,29 @@ class FindingPCTNH(View):
             'ctpnh': data
         }
         return JsonResponse(ctpnh)
+        
 # manipulate PCTXH's data
+CTXH_pk = None
+
 def PCTXHView(request):
+    global CTXH_pk
+    val = request.GET.get('id', None)
     list_mapxh = Phieuxuathang.objects.all()
     list_mamh = Mathang.objects.all()
-    list_ct_pxh = CtPxh.objects.all()
-    return render(request, 'ctpxh.html', {'pctxhs': list_ct_pxh, 'mapxhs': list_mapxh, 'mamhs': list_mamh})
+
+    if val == None:
+        val = CTXH_pk
+        list_ct_pxh = CtPxh.objects.filter(maphieuxuat=val)
+    else:
+        CTXH_pk = val
+        return JsonResponse({'save': True})
+
+    return render(request, 'QLCDL/pctxh.html', {'pctxhs': list_ct_pxh, 'mapxhs': list_mapxh, 'mamhs': list_mamh})
+    
 class CreatePCTXH(View):
     def get(self, request):
-        mapxh = request.GET.get('mapxh', None)
+        global CTXH_pk
+        mapxh = CTXH_pk
         mamh = request.GET.get('mamh', None)
         slxuat = request.GET.get('slxuat', None)
 
@@ -1710,6 +1742,7 @@ class CreatePCTXH(View):
         }
 
         return JsonResponse(data)
+        
 class RemovePCTXH(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -1723,6 +1756,7 @@ class RemovePCTXH(View):
             'deleted': True
         }
         return JsonResponse(data)
+        
 class UpdatePCTXH(View):
     def get(self, request):
         id1 = request.GET.get('id', None)
@@ -1741,6 +1775,7 @@ class UpdatePCTXH(View):
         }
 
         return JsonResponse(data)
+        
 class FindingPCTXH(View):
     def get(self, request):
         info = request.GET.get('info', None)
