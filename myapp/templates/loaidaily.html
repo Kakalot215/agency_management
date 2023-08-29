@@ -201,5 +201,59 @@ $('#LDL_Update').submit(function(){
     $('#LDLModalUpdate').modal('hide');
     return false;
 });
+$('#finding').keypress(function(event){
+    let findingInfo = $(this).val();
+    if(event.which == 13)
+    {
+        $.ajax({
+            url: "{% url 'ldl_finding' %}",
+            data: {
+                'info': findingInfo
+            },
+            datatype: 'json',
+            success: function(ldl)
+            {
+                if(ldl.ldl == "empty")
+                {
+                    alert("KHÔNG TÌM THẤY!");
+                }
+                else
+                {   
+                    console.log("Hello");
+                    $('#loaidaily_table tr').remove();
+                    appendLDLTable(ldl);
+                }
+            }
+        });
+        event.preventDefault();
+    }
+})
+function appendLDLTable(ldl)
+{
+    $('#loaidaily_table > thead').append(
+    `
+        <tr>    
+            <th>MÃ LOẠI ĐẠI LÝ</th>
+            <th>TÊN LOẠI ĐẠI LÝ</th>
+            <th>SỐ NỢ TỐI ĐA</th>
+            <th></th>
+            <th></th>
+        </tr>
+    `
+    );
+    
+    for (let i = 0; i < ldl.ldl.length; i++)
+    {
+        $('#loaidaily_table > tbody:last-child').append(`
+        <tr id="Q-${ldl.ldl[i][0]}">
+            <td>${ldl.ldl[i][0]}</td>
+            <td>${ldl.ldl[i][1]}</td>
+            <td>${ldl.ldl[i][2]}</td>
+            <td> <button type="button" class="btn btn-success" data-toggle="modal" data-target="#LDLModalUpdate" data-whatever="${ldl.ldl[i][0]}">EDIT</button> </td>
+            <td> <button type="button" class="btn btn-danger" onclick="deleteLDL('${ldl.ldl[i][0]}')">DELETE</button> </td>
+        </tr>
+        `);       
+    }
+}
 </script>
 {% endblock %}
